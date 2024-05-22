@@ -1,0 +1,25 @@
+{
+    "name": "Colnnor.Global",
+    "rootNamespace": "",
+    "references": [
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:2bafac87e7f4b9b418d9448d219b01ab",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:7d5f95befe49f9b4692b0fc2af2c341d",
+        "GUID:cda3b344931084241ab45e39317b69b6",
+        "GUID:33759803a11f4d538227861a78aba30b",
+        "GUID:4307f53044263cf4b835bd812fc161a4",
+        "GUID:caca889fed6088d40b22c2d7e2909c31",
+        "GUID:fb24642277b1db2449da7ac148ce939d",
+        "GUID:4a1cb1490dc4df8409b2580d6b44e75e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

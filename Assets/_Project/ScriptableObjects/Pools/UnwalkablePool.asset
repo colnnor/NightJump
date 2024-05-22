@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45d575960915de448a566fe21df33d32, type: 3}
+  m_Name: UnwalkablePool
+  m_EditorClassIdentifier: 
+  pooledGameObjects:
+  - {fileID: 2711262648036628483, guid: 672241b3af9632a4c853eda6a39f0ccf, type: 3}
+  - {fileID: 3760752841765910177, guid: f8461c399e20a494d816ab918cc31b11, type: 3}
+  - {fileID: 1000558237081207886, guid: c4a6f6596e8f7b9449fca2fb20799303, type: 3}

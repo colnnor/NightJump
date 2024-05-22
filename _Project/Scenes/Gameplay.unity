@@ -1490,7 +1490,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &410087040
 Light:
   m_ObjectHideFlags: 0
@@ -1813,7 +1813,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  locator: {fileID: 0}
 --- !u!1001 &517368182
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5940,7 +5939,7 @@ MonoBehaviour:
       m_ColorSpace: -1
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
-    m_ColorMin: {r: -0.027377188, g: 4.5914e-41, b: 4.528038e-31, a: 4.82e-43}
+    m_ColorMin: {r: -0.0077598244, g: 4.5914e-41, b: -3.5709461e-34, a: 5.44e-43}
     m_ColorMax: {r: 1, g: 1, b: 1, a: 1}
   isBurst: 1
   minNumberOfParticles: 10
@@ -21131,6 +21130,16 @@ PrefabInstance:
       propertyPath: shakeParticles
       value: 
       objectReference: {fileID: 1281920067}
+    - target: {fileID: 1039030882461097516, guid: dd9f4c63a0be4ae4f9ff180c6cb92fe1,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1039030883778096008, guid: dd9f4c63a0be4ae4f9ff180c6cb92fe1,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2086468451671221971, guid: dd9f4c63a0be4ae4f9ff180c6cb92fe1,
         type: 3}
       propertyPath: m_Name

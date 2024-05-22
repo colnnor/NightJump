@@ -6,9 +6,8 @@ using UnityEngine;
 
 public class ServiceLocator : SerializedMonoBehaviour
 {
-    public static ServiceLocator Instance;
-    [SerializeField] ServiceLocator locator;
-    /*public static ServiceLocator Instance
+    public static ServiceLocator _instance;
+    public static ServiceLocator Instance
     {
         get
         {
@@ -23,23 +22,26 @@ public class ServiceLocator : SerializedMonoBehaviour
             }
             return _instance;
         }
-    }*/
+    }
 
     [SerializeField] private Dictionary<Type, object> registeredServices = new();
 
     private void Awake()
     {
-        if(Instance == null)
+        if(_instance == null)
         {
-            Instance = this;
+            _instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else if (Instance != this)
+        else if (_instance != this)
         {
             Destroy(gameObject);
         }
+    }
 
-        locator = Instance;
+    private void OnDestroy()
+    {
+        Destroy(gameObject);    
     }
 
     public void RegisterService<T>(T service)

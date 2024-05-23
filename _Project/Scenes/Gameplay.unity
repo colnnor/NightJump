@@ -1121,7 +1121,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 58.0563
+  field of view: 57.81379
   orthographic: 0
   orthographic size: 10
   m_Depth: -1
@@ -1916,6 +1916,7 @@ MonoBehaviour:
   score: 0
   origin: {x: 0, y: 0, z: 0}
   inputReader: {fileID: 11400000, guid: 1727fd206f10326498e963b8f8436635, type: 2}
+  isPaused: 0
 --- !u!1 &551235109 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1039030883409441920, guid: dd9f4c63a0be4ae4f9ff180c6cb92fe1,
@@ -2724,6 +2725,8 @@ MonoBehaviour:
   pausedMenu: {fileID: 1052878012}
   settingsMenu: {fileID: 586070498449360267}
   gameOverMenu: {fileID: 594793166}
+  animTime: 0.2
+  easeType: 13
   scoreText: {fileID: 539123288}
   finalScoreText: {fileID: 1604501489}
 --- !u!4 &787862659
@@ -12443,7 +12446,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 0}
   m_Lens:
-    FieldOfView: 58.0563
+    FieldOfView: 57.81379
     OrthographicSize: 10
     NearClipPlane: 0.1
     FarClipPlane: 5000
@@ -12742,9 +12745,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 804480a69873de547a2d373117292ead, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridManager: {fileID: 0}
-  cameraManager: {fileID: 0}
-  gameManager: {fileID: 0}
   levelMovementValues: {fileID: 11400000, guid: ab44a33ee4118b047901d221cf1227a2,
     type: 2}
 --- !u!1 &1783165695

@@ -30,11 +30,15 @@ public class AudioManager : MonoBehaviour
                 instance = FindFirstObjectByType<AudioManager>();
                 if(instance == null)
                 {
-
+#if UNITY_EDITOR
                     GameObject go = Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/Audio Manager.prefab"));
                     go.name = "AudioManger_autocreated";
 
                     instance = go.GetComponent<AudioManager>();
+#else
+                    throw new System.Exception("No AudioManager found in scene");
+#endif
+
                 }
             }
             return instance;

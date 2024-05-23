@@ -19,6 +19,7 @@ public class EnemyController : MonoBehaviour, IDeadly
     
     private bool endOfPathReached;
     private bool canMove;
+    private bool paused;
     public bool CollectedGem { get; private set;}
 
     private Collider enemyCollider;
@@ -72,6 +73,7 @@ public class EnemyController : MonoBehaviour, IDeadly
 
     private void PauseGame()
     {
+        paused = true;
         StopAllCoroutines();
         CanMove = false;
         canMove = false;
@@ -94,6 +96,7 @@ public class EnemyController : MonoBehaviour, IDeadly
 
     private void OnGameResume()
     {
+        paused = false;
         if(CollectedGem) return;
         EnableMovement();
         currentTranslationTime = slowTranslationTime;
@@ -101,6 +104,7 @@ public class EnemyController : MonoBehaviour, IDeadly
     private void OnGameStart()
     {
         CollectedGem = false;   
+        if(paused) return;
         EnableMovement();
         currentTranslationTime = slowTranslationTime;
     }

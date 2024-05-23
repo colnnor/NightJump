@@ -3,30 +3,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public enum MenuState
+{
+    Main,
+    Settings,
+    GameOver,
+    None
+}
+
 public class UIManager : MonoBehaviour
 {
+    [SerializeField] private GameObject panel;
     [SerializeField] private GameObject pausedMenu;
-    [SerializeField] private RectTransform pauseMenuRect;
     [SerializeField] private GameObject settingsMenu;
     [SerializeField] private GameObject gameOverMenu;
 
-    [SerializeField] private GameManager gameManager;
-
-    Vector3 pausedMenuStartPos;
-    Vector3 settingsMenuStartPos;
-    Vector3 gameOverMenuStartPos;
-    Vector3 pauseMenuRectStartPos;
-
-    private void Awake()
-    {
-        pauseMenuRectStartPos = pauseMenuRect.position;
-        pausedMenuStartPos = pausedMenu.transform.localPosition;
-        settingsMenuStartPos = settingsMenu.transform.localPosition;
-        gameOverMenuStartPos = gameOverMenu.transform.localPosition;
-    }
+    [SerializeField] private float animTime;
+    [SerializeField] private Ease easeType = Ease.InOutQuart;
 
     [SerializeField] private Text scoreText;
-    [SerializeField] private Text scoreText2;
+    [SerializeField] private Text finalScoreText;
+
+    private Dictionary<MenuState, GameObject> menuScales;
+
+    private GameManager gameManager;
+                
     private void OnEnable()
     {
         GameManager.UpdateScore += UpdateScore;
@@ -45,45 +47,80 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
+        menuScales = new()
+        {
+            { MenuState.Main, pausedMenu },
+            { MenuState.Settings, settingsMenu },
+            { MenuState.GameOver, gameOverMenu },
+        };
+        SetMenuState(MenuState.None);
+        EnableMenus(false);
+        
         gameManager = ServiceLocator.Instance.GetService<GameManager>(this);
         UpdateScore(0);
     }
     public void PauseGame()
     {
-        pausedMenu.SetActive(true);
+        EnableMenus();
+        SetMenuState(MenuState.Main);
+    }
+
+    public void EnableMenus(bool enabled = true)
+    {
+        panel.SetActive(enabled);
+        foreach (var menu in menuScales)
+        {
+            if (!enabled)
+                menu.Value.transform.localScale = Vector3.zero;
+            menu.Value.SetActive(enabled);
+        }
     }
 
     public void ResumeGame()
     {
-        pausedMenu.SetActive(false);
-        ResetMenus();
+        EnableMenus(false);
     }
 
     public void GameOver()
     {
+        EnableMenus();
+        SetMenuState(MenuState.GameOver);
         UpdateScore(gameManager.Score);
-        gameOverMenu.SetActive(true);
     }
-
     public void ToSettings()
     {
-        pauseMenuRect.DOMoveX(-1920, .15f).SetEase(Ease.InOutSine);
+        SetMenuState(MenuState.Settings);
     }
     public void ToMain()
     {
-        pauseMenuRect.DOMoveX(0, .15f).SetEase(Ease.InOutSine);
-
+        SetMenuState(MenuState.Main);
     }
-
-    void ResetMenus()
+    public void ToGameOver()
     {
-        pauseMenuRect.anchoredPosition = new Vector3(-960, -540, 0);
+        SetMenuState(MenuState.GameOver);
+    }
+    private void SetMenuState(MenuState state)
+    {
+        foreach (var menu in menuScales)
+        {
+            if (!menu.Value.activeSelf)
+                return;
 
+            if (menu.Key == state)
+            {
+                menu.Value.transform.DOScale(Vector3.one, animTime).SetEase(easeType);
+            }
+            else
+            {
+                menu.Value.transform.DOScale(Vector3.zero, animTime).SetEase(easeType);
+            }
+        }
     }
 
     public void UpdateScore(int score)
     {
         scoreText.UpdateText($"Score: {score}");
-        scoreText2.UpdateText($"FinalScore: {score}");
+        finalScoreText.UpdateText($"Final Score: {score}");
     }
 }
+

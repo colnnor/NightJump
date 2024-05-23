@@ -7,7 +7,7 @@ using System;
 using Random = UnityEngine.Random;
 
 
-public class GridManager : MonoBehaviour, IDependencyProvider
+public class GridManager : MonoBehaviour
 {
     public static event Action<bool> GemCollected;
 

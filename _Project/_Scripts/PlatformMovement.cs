@@ -6,17 +6,17 @@ using System;
 
 public class PlatformMovement : MonoBehaviour
 {
-    [SerializeField] private GridManager gridManager;
-    [SerializeField] private CameraManager cameraManager;
-    [SerializeField] private GameManager gameManager;
-
     [Title("Main Move Settings")]
     [SerializeField] private LevelMovementValues levelMovementValues;
 
     public static event Action OnPlatformMovementComplete;
 
     private Vector3 currentEndPoint;
+    private GridManager gridManager;
+    private CameraManager cameraManager;
     private Vector3 centerPoint;
+    private GameManager gameManager;
+
 
     private void Start()
     {
@@ -35,13 +35,21 @@ public class PlatformMovement : MonoBehaviour
     {
         GameManager.OnGameEnd += GameOver;
         GridManager.GemCollected += MovePlatform;
+        GameManager.OnGamePause += Pause;
+        GameManager.OnGameResume += Resume;
     }
 
     private void OnDisable()
     {
+        GameManager.OnGamePause -= Pause;
+        GameManager.OnGameResume -= Resume;
         GameManager.OnGameEnd -= GameOver;
         GridManager.GemCollected -= MovePlatform;
     }
+
+
+    private void Resume() => transform.DOPlay();
+    private void Pause() => transform.DOPause();
 
     private void GameOver()
     {

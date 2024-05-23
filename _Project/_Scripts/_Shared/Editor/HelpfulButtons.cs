@@ -29,16 +29,6 @@ public class HelpfulButtons : OdinEditorWindow
         }
     }
 
-    [Button(ButtonSizes.Large)]
-    [ButtonGroup]
-
-    private void OpenSceneGroups()
-    {
-        var window = GetWindow<SceneGroupsWindow>();
-        window.Show();
-        window.WindowPadding = new UnityEngine.Vector4();
-    }
-
     [ButtonGroup]
     [Button(ButtonSizes.Large)]
     private void OpenBuildSettings() => EditorWindow.GetWindow(Type.GetType("UnityEditor.BuildPlayerWindow, UnityEditor"));

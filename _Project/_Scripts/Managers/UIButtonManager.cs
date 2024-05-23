@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine;
 
-public class UIButtonManager : MonoBehaviour, IDependencyProvider
+public class UIButtonManager : MonoBehaviour
 {
-    [Provide] private UIButtonManager ProvideButtonManager() => this;
     [SerializeField] private InputReader inputReader;
     public List<GameObject> Buttons;
 

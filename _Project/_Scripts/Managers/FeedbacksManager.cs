@@ -5,9 +5,8 @@ using MoreMountains.Feedbacks;
 
 
 
-public class FeedbacksManager : MonoBehaviour, IDependencyProvider
+public class FeedbacksManager : MonoBehaviour
 {
-    [Provide] FeedbacksManager ProvideFeedbacksManager() => this;
 
     [SerializeField] private MMFeedbacks jumpFeedback;
     [SerializeField] private MMFeedbacks damageFeedback;

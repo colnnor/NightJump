@@ -6,9 +6,9 @@ using UnityEngine;
 public class AudioSettings : ScriptableObject
 {
     [Range(-80, 20)]
-    public float masterVolume = 1f;
+    public float MasterVolume = 1f;
     [Range(0, 1)]
-    public float musicVolume = 1f;
+    public float MusicVolume = 1f;
     [Range(0, 1)]
-    public float sfxVolume = 1f;
+    public float SFXVolume = 1f;
 }

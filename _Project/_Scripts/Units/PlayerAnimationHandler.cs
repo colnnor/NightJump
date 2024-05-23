@@ -28,7 +28,6 @@ public class PlayerAnimationHandler : MonoBehaviour
         if (isAnimating) return;
         isAnimating = true;
 
-        Debug.Log( this);
         animator.SetTrigger(JUMP);
         StartCoroutine(ResetIsAnimating());
     }

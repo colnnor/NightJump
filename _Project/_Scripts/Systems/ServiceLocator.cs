@@ -6,21 +6,21 @@ using UnityEngine;
 
 public class ServiceLocator : SerializedMonoBehaviour
 {
-    public static ServiceLocator _instance;
+    public static ServiceLocator instance;
     public static ServiceLocator Instance
     {
         get
         {
-            if (_instance == null)
+            if (instance == null)
             {
-                _instance = FindFirstObjectByType<ServiceLocator>();
-                if (_instance == null)
+                instance = FindFirstObjectByType<ServiceLocator>();
+                if (instance == null)
                 {
                     GameObject go = new GameObject("ServiceLocator");
-                    _instance = go.AddComponent<ServiceLocator>();
+                    instance = go.AddComponent<ServiceLocator>();
                 }
             }
-            return _instance;
+            return instance;
         }
     }
 
@@ -28,12 +28,12 @@ public class ServiceLocator : SerializedMonoBehaviour
 
     private void Awake()
     {
-        if(_instance == null)
+        if(instance == null)
         {
-            _instance = this;
+            instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else if (_instance != this)
+        else if (instance != this)
         {
             Destroy(gameObject);
         }
@@ -64,7 +64,7 @@ public class ServiceLocator : SerializedMonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"Service of type {type} is not registered.");
+            Debug.LogWarning($"Service of type {Service} is not registered.");
         }
     }
 
@@ -82,4 +82,7 @@ public class ServiceLocator : SerializedMonoBehaviour
             return default;
         }
     }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void ResetStatics() => instance = null;
 }

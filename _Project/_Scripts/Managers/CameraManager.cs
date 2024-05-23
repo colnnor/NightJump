@@ -2,31 +2,53 @@ using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 
-public class CameraManager : MonoBehaviour, IDependencyProvider
+public class CameraManager : MonoBehaviour
 {
     CameraManager ProvideCameraManager() => this;
-    [SerializeField] private GridManager gridManager;
-    [SerializeField] private GameManager gameManager;
 
     [SerializeField] private LevelMovementValues levelMovementValues;
     [SerializeField] private Transform virtualCamera;
     [SerializeField] private Vector3 cameraOffset = new(0, 11, -3);
 
-    public Camera Camera => Helpers.Camera;
+    private Camera mainCam;
+    private GameManager gameManager;
+    private GridManager gridManager;
     private Vector3 nextPosition;
+    private void Awake()
+    {
+        ServiceLocator.Instance.RegisterService(this);
+        mainCam = GetComponent<Camera>();
+    }
 
     private void OnEnable()
     {
         GridManager.GemCollected += JumpToNextPosition;
+        GameManager.OnGamePause += Pause;
+        GameManager.OnGameResume += Resume;
         GameManager.OnGameEnd += GameOver;
     }
 
+
+
     private void OnDisable()
     {
-        ServiceLocator.Instance.DeregisterService<CameraManager>(this);
+        ServiceLocator.Instance.DeregisterService(this);
+        GameManager.OnGamePause -= Pause;
+        GameManager.OnGameResume -= Resume;
         GridManager.GemCollected -= JumpToNextPosition;
         GameManager.OnGameEnd -= GameOver;
     }
+    private void Start()
+    {
+        gameManager = ServiceLocator.Instance.GetService<GameManager>(this);
+        gridManager = ServiceLocator.Instance.GetService<GridManager>(this);
+        mainCam.clearFlags = CameraClearFlags.Color;
+    }
+    
+    
+    
+    private void Pause() => virtualCamera.transform.DOPause();
+    private void Resume() => virtualCamera.transform.DOPlay();
 
     private void GameOver()
     {
@@ -34,20 +56,9 @@ public class CameraManager : MonoBehaviour, IDependencyProvider
         virtualCamera.DOKill();
     }
 
-    private void Awake()
-    {
-        ServiceLocator.Instance.RegisterService<CameraManager>(this);
-    }
-    private void Start()
-    {
-        ServiceLocator.Instance.RegisterService<CameraManager>(this);
-        gameManager = ServiceLocator.Instance.GetService<GameManager>(this);
-        gridManager = ServiceLocator.Instance.GetService<GridManager>(this);
-        Camera.clearFlags = CameraClearFlags.Color;
-    }
     public void ChangeCamera(bool b)
     {
-        Camera.clearFlags = b ? CameraClearFlags.Skybox : CameraClearFlags.Color;
+        mainCam.clearFlags = b ? CameraClearFlags.Skybox : CameraClearFlags.Color;
     }
 
     public void JumpToNextPosition(bool value)

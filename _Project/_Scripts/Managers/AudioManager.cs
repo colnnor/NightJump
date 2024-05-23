@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using DG.Tweening;
+using Eflatun.SceneReference;
+using UnityEditor;
 
 public enum SFXType
 {
@@ -15,19 +18,43 @@ public enum SFXType
     EnemyCollect
 }
 
-
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Instance { get; private set; }
-    [SerializeField] bool overrideMixer;
+    private static AudioManager instance;
+    public static AudioManager Instance
+    { 
+        get
+        {
+            if(instance == null)
+            {
+                instance = FindFirstObjectByType<AudioManager>();
+                if(instance == null)
+                {
+
+                    GameObject go = Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/Audio Manager.prefab"));
+                    go.name = "AudioManger_autocreated";
+
+                    instance = go.GetComponent<AudioManager>();
+                }
+            }
+            return instance;
+        }
+    }
+    [Title("Settings")]
+    [SerializeField] private float crossFadeDuration;
+    [SerializeField] private AudioSettings audioSettings;
+    [SerializeField] private bool playMusicOnAwake;
     [SerializeField] private AudioMixer audioMixer;
+    [SerializeField] bool overrideMixer;
 
     [Title("Sources")]
     [SerializeField] private AudioSource sfxSource;
-    [SerializeField] private AudioSource musicSource;
+    [SerializeField] private AudioSource musicSourceA;
+    [SerializeField] private AudioSource musicSourceB;
 
     [Title("Clips")]
     [SerializeField] private AudioClip musicClip;
+    [SerializeField] private AudioClip gamePlayMusicClip;
     [SerializeField] private AudioClip buttonClickClipPositive;
     [SerializeField] private AudioClip buttonClickClipNegative;
     [SerializeField] private AudioClip jumpClip;
@@ -37,9 +64,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip collectClip;
     [SerializeField] private AudioClip enemyCollectClip;
 
-    [Title("Settings")]
-    [SerializeField] private AudioSettings audioSettings;
-    [SerializeField] private bool playMusicOnAwake;
+    private AudioSource currentSource;
     private Dictionary<SFXType, AudioClip> clips = new();
 
     private const string MASTER_VOLUME = "MasterVolume";
@@ -55,51 +80,70 @@ public class AudioManager : MonoBehaviour
             return sfxSource;
         }
     }
-    private AudioSource MusicSource
-    {
-        get
-        {
-            if(!musicSource) musicSource = gameObject.AddComponent<AudioSource>();
-            return musicSource;
-        }
-    }
     private void Awake()
     {
-        if(Instance != null)
+        if(instance != null)
         {
             Destroy(gameObject);
             Debug.LogWarning("Multiple instances of AudioManager detected. Destroying duplicate...");
             return;
         }
-        Instance = this;
+        instance = this;
         DontDestroyOnLoad(gameObject);  
     }
 
     private void OnEnable()
     {
-        GameManager.OnGameResume += Resume;
-        GameManager.OnGamePause += Pause;
+        LevelManager.OnSceneLoaded += SceneLoaded;
+        GameManager.OnGameResume += ResetAudio;
+        GameManager.OnGamePause += PausedAudio;
+    }
+    private void OnDisable()
+    {
+        LevelManager.OnSceneLoaded -= SceneLoaded;
+        GameManager.OnGameResume -= ResetAudio;
+        GameManager.OnGamePause -= PausedAudio;
+    }
+    private void Start()
+    {
+        currentSource = musicSourceA;
+        if (playMusicOnAwake)
+        { 
+            PlayMusic(musicClip); 
+        }
+
+        InitializeDictionary();
+        ResetSourceVolumes();
     }
 
-    private void Resume()
+    void SceneLoaded(SceneType scene)
+    {
+        AudioClip clip = musicClip;
+        
+        if(scene == SceneType.GamePlay)
+            clip = gamePlayMusicClip;
+        
+
+        CrossFade(clip, crossFadeDuration);
+        
+        ResetAudio();
+    }
+
+
+    private void ResetAudio()
     {
         ResetLowpass();
-        audioMixer.SetFloat(MASTER_VOLUME, audioSettings.masterVolume);
+        audioMixer.SetFloat(MASTER_VOLUME, audioSettings.MasterVolume);
     }
 
 
-    private void Pause()
+    private void PausedAudio()
     {
         EnforceLowpass();
-        float volume = audioSettings.masterVolume < 0 ? audioSettings.masterVolume * 2 : audioSettings.masterVolume / 2;
+        float volume = audioSettings.MasterVolume < 0 ? audioSettings.MasterVolume * 2 : audioSettings.MasterVolume / 2;
         audioMixer.SetFloat(MASTER_VOLUME, volume);
     }
 
-    private void OnDisable()
-    {
-        GameManager.OnGameResume -= Resume;
-        GameManager.OnGamePause -= Pause;
-    }
     private void ResetLowpass()
     {
         audioMixer.SetFloat(LOWPASS_CUTOFF, LOWPASS_NORMAL_VALUE);
@@ -110,35 +154,45 @@ public class AudioManager : MonoBehaviour
         audioMixer.SetFloat(LOWPASS_CUTOFF, LOWPASS_CUTTOFF_VALUE);
     }
 
-    private void Start()
+    public void CrossFade(AudioClip clipToFadeTo, float fadeDuration)
     {
-        if (playMusicOnAwake)
-        { 
-            PlayMusic(musicClip); 
-        }
+        Debug.Log($"Fading to {clipToFadeTo.name} in {fadeDuration} seconds");
+        AudioSource fadeInSource = currentSource == musicSourceA ? musicSourceB : musicSourceA;
+        AudioSource fadeOutSource = currentSource;
+
+        fadeInSource.clip = clipToFadeTo;
+        fadeInSource.volume = 0;
+        fadeInSource.Play();
+
+        fadeInSource.DOFade(audioSettings.MusicVolume, fadeDuration);
+        currentSource.DOFade(0, fadeDuration).OnComplete(() => fadeOutSource.Stop());
+        
+        currentSource = fadeInSource;
 
 
-        InitializeDictionary();
-        ResetSourceVolumes();
+
+        //fade out current
+        //fade in new based on settings volume
+        //update current music source
+        //stop old
     }
 
     public void ResetSourceVolumes()
     {
         if (!overrideMixer) return;
 
-        audioSettings.sfxVolume = 1.0f;
-        audioSettings.musicVolume = 1.0f;
-        audioSettings.masterVolume = 0;
+        audioSettings.MasterVolume = 0;
         InitializeSourceVolumes();
     }
     
 
     void InitializeSourceVolumes()
     { 
-        sfxSource.volume = audioSettings.sfxVolume;
-        musicSource.volume = audioSettings.musicVolume;
+        sfxSource.volume = audioSettings.SFXVolume;
+        musicSourceA.volume = audioSettings.MusicVolume;
+        musicSourceB.volume = audioSettings.MusicVolume;
 
-        audioMixer.SetFloat(MASTER_VOLUME, audioSettings.masterVolume);
+        audioMixer.SetFloat(MASTER_VOLUME, audioSettings.MasterVolume);
         ResetLowpass();
     }
     private void InitializeDictionary()
@@ -159,7 +213,7 @@ public class AudioManager : MonoBehaviour
         new Builder(SFXSource)
             .SetClip(clip)
             .SetLocation(location ?? Vector3.zero)
-            .SetVolume(volume ?? audioSettings.sfxVolume)
+            .SetVolume(volume ?? audioSettings.SFXVolume)
             .SetRandomPitch(randomPitch)
             .Play();
     }
@@ -167,10 +221,10 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusic(AudioClip clip, bool loop = true, float volume = 1.0f)
     {
-        MusicSource.clip = clip;
-        MusicSource.loop = loop;
-        MusicSource.volume = volume;
-        MusicSource.Play();
+        currentSource.clip = clip;
+        currentSource.loop = loop;
+        currentSource.volume = volume;
+        currentSource.Play();
     }
 
     #region change volume
@@ -178,15 +232,16 @@ public class AudioManager : MonoBehaviour
     {
         if (!overrideMixer) return;
 
-        audioSettings.musicVolume = volume;
-        musicSource.volume = volume;
+        audioSettings.MusicVolume = volume;
+        musicSourceA.volume = volume;
+        musicSourceB.volume = volume;
     }
 
     public void UpdateSFXVolume(float volume)
     {
         if (!overrideMixer) return;
 
-        audioSettings.sfxVolume = volume;
+        audioSettings.SFXVolume = volume;
         sfxSource.volume = volume;
     }
 
@@ -194,7 +249,7 @@ public class AudioManager : MonoBehaviour
     {
         if (!overrideMixer) return;
 
-        audioSettings.masterVolume = volume;
+        audioSettings.MasterVolume = volume;
         audioMixer.SetFloat(MASTER_VOLUME, volume);
     }
 #endregion

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class PrefabsProvider : MonoBehaviour, IDependencyProvider
+public class PrefabsProvider : MonoBehaviour
 {
     public Transform GemPrefab;
     public Transform EnemyPrefab;
@@ -9,9 +9,5 @@ public class PrefabsProvider : MonoBehaviour, IDependencyProvider
     {
         ServiceLocator.Instance.RegisterService<PrefabsProvider>(this);
     }
-    [Provide]
-    public PrefabsProvider ProviderPrefabs()
-    {
-        return this;
-    }
+
 }

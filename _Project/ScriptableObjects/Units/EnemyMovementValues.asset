@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: EnemyMovementValues
   m_EditorClassIdentifier: 
   JumpSound: {fileID: 8300000, guid: 31c02bdba068c5745a31c277452f1bc0, type: 3}
-  TranslationTime: 0.8
+  TranslationTime: 0.6
   MoveCooldownTime: 0.1

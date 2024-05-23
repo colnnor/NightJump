@@ -5,17 +5,15 @@ using Sirenix.OdinInspector;
 using QFSW.QC;
 using System.Collections;
 
-public class PlayerController : MonoBehaviour, IDependencyProvider
+public class PlayerController : MonoBehaviour
 {
     public static event Action OnPlayerDeath;
     public static event Action<int> OnPlayerDamage;
     
-    //Dependency Injection
-    [Provide] PlayerController ProvidePlayerController() => this;
-    [SerializeField] private GameManager gameManager;
-    [SerializeField] private PlayerAudio playerAudio;
-    [SerializeField] private FeedbacksManager feedbacksManager;
-    [SerializeField] private GridManager gridManager;
+    private GameManager gameManager;
+    private PlayerAudio playerAudio;
+    private FeedbacksManager feedbacksManager;
+    private GridManager gridManager;
 
     [Title("Input")]
     [SerializeField] private InputReader inputReader;
@@ -31,14 +29,16 @@ public class PlayerController : MonoBehaviour, IDependencyProvider
     public int Health => playerHealth._Health;  
 
     private PlayerFXHandler playerFXHandler;
+    private EnemyController enemyController;
 
     //private fields
     private Collider playerCollider;
     private const float k_rotationAmount = 90f;
     private Vector3 startPosition;
-    private bool isMoving;
     private Vector3Int nextPosition;
 
+    private bool isPaused;
+    private bool isMoving;
     private bool enemyCollectedGem;
     
     private void Awake()
@@ -50,11 +50,56 @@ public class PlayerController : MonoBehaviour, IDependencyProvider
         playerHealth = gameObject.GetOrAddComponent<PlayerHealth>();
     }
 
+
+    private void OnEnable()
+    {
+        GameManager.OnGameStart += StartGame;
+        GameManager.OnGamePause += Pause;
+        GameManager.OnGameResume += Resume;
+        LightManager.DelayedLightOff += StartLevel;
+        PlatformMovement.OnPlatformMovementComplete += LandedAtNewGrid;
+        GridManager.GemCollected += GemCollected;
+        inputReader.BackwardEvent += OnBackward;
+        inputReader.ForwardEvent += OnForward;
+        inputReader.LeftEvent += OnLeft;
+        inputReader.RightEvent += OnRight;
+        inputReader.AnyPressed += OnAnyPressed;
+    }
+
+    private void Pause()
+    {
+        inputReader.EnablePlayerMovement(false);
+    }
+
+    private void Resume()
+    {
+        if (enemyController.CollectedGem)
+            return;
+
+        inputReader.EnablePlayerMovement();
+    }
+
+    private void OnDisable()
+    {
+        ServiceLocator.Instance.DeregisterService<PlayerController>(this);
+        GameManager.OnGamePause -= Pause;
+        GameManager.OnGameResume -= Resume;
+        GameManager.OnGameStart -= StartGame;
+        LightManager.DelayedLightOff -= StartLevel;
+        PlatformMovement.OnPlatformMovementComplete -= LandedAtNewGrid;
+        GridManager.GemCollected -= GemCollected;
+        inputReader.BackwardEvent -= OnBackward;
+        inputReader.ForwardEvent -= OnForward;
+        inputReader.LeftEvent -= OnLeft;
+        inputReader.RightEvent -= OnRight;
+        inputReader.AnyPressed -= OnAnyPressed;
+    }
+
     private void Start()
     {
+        enemyController = ServiceLocator.Instance.GetService<EnemyController>(this);
         gameManager = ServiceLocator.Instance.GetService<GameManager>(this);
         gridManager = ServiceLocator.Instance.GetService<GridManager>(this);
-        feedbacksManager = ServiceLocator.Instance.GetService<FeedbacksManager>(this);
         playerAudio = ServiceLocator.Instance.GetService<PlayerAudio>(this);
     }
 
@@ -112,32 +157,6 @@ public class PlayerController : MonoBehaviour, IDependencyProvider
     }
     #endregion
 
-    private void OnEnable()
-    {
-        GameManager.OnGameStart += StartGame;
-        LightManager.DelayedLightOff += StartLevel;
-        PlatformMovement.OnPlatformMovementComplete += LandedAtNewGrid;
-        GridManager.GemCollected += GemCollected;
-        inputReader.BackwardEvent += OnBackward;
-        inputReader.ForwardEvent += OnForward;
-        inputReader.LeftEvent += OnLeft;
-        inputReader.RightEvent += OnRight;
-        inputReader.AnyPressed += OnAnyPressed;
-    }
-    private void OnDisable()
-    {
-        ServiceLocator.Instance.DeregisterService<PlayerController>(this);
-        GameManager.OnGameStart -= StartGame;
-        LightManager.DelayedLightOff -= StartLevel;
-        PlatformMovement.OnPlatformMovementComplete -= LandedAtNewGrid;
-        GridManager.GemCollected -= GemCollected;
-        inputReader.BackwardEvent -= OnBackward;
-        inputReader.ForwardEvent -= OnForward;
-        inputReader.LeftEvent -= OnLeft;
-        inputReader.RightEvent -= OnRight;
-        inputReader.AnyPressed -= OnAnyPressed;
-    }
-
     public void StartGame()
     {
         ResetPosition();
@@ -168,7 +187,8 @@ public class PlayerController : MonoBehaviour, IDependencyProvider
 
     public void StartLevel()
     {
-        EnableInputActions();
+        inputReader.EnableInputActions();
+        EnablePlayerMovement();
     }
     public void GemCollected(bool value)
     {
@@ -183,7 +203,7 @@ public class PlayerController : MonoBehaviour, IDependencyProvider
         isMoving = false;
         playerCollider.enabled = false;
         
-        EnableInputActions(false);
+        EnablePlayerMovement(false);
         HandleParent(movingPlatform);
         transform.localPosition = Vector3.zero;
     }
@@ -193,7 +213,7 @@ public class PlayerController : MonoBehaviour, IDependencyProvider
         transform.DOKill();
         playerCollider.enabled = false;
         isMoving = false;
-        EnableInputActions(false);
+        EnablePlayerMovement(false);
         playerHealth.TakeDamage(1);
 
         OnPlayerDamage?.Invoke(GetHealth());
@@ -203,16 +223,16 @@ public class PlayerController : MonoBehaviour, IDependencyProvider
             OnPlayerDeath?.Invoke();
             return;
         }
-        if (enemyCollectedGem) return;
-
-        ResetPosition();
         StartCoroutine(HandleIFrames());
     }
 
     IEnumerator HandleIFrames()
     {
         yield return Helpers.GetWait(playerDamageInvisibilityDuration);
-        EnableInputActions();
+        if(enemyCollectedGem) yield break;
+
+        ResetPosition();
+        EnablePlayerMovement();
         playerFXHandler.FlickerPlayerVisibility();
         playerCollider.enabled = true;
     }
@@ -239,7 +259,7 @@ public class PlayerController : MonoBehaviour, IDependencyProvider
         transform.SetParent(parent);
     }
 
-    private void EnableInputActions(bool value = true) => inputReader.EnableInputActions(value);
+    private void EnablePlayerMovement(bool value = true) => inputReader.EnablePlayerMovement(value);
     void ResetIsMoving()
     {
         transform.position = nextPosition;

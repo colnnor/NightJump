@@ -2,7 +2,7 @@ using Sirenix.OdinInspector;
 using System.Collections;
 using System;
 using UnityEngine;
-
+using DG.Tweening;
 public class LightManager : MonoBehaviour
 {
     [SerializeField] private CameraManager cameraManager;
@@ -20,11 +20,15 @@ public class LightManager : MonoBehaviour
     [SerializeField] private float lightsOffDelay = 2f;
 
     bool moving;
-
+    private Coroutine lightsOffCoroutine;
+    private float remainingDelay;
+    private float startedTime;
+    private float timer;
 
     private void Start()
     {
         cameraManager = ServiceLocator.Instance.GetService<CameraManager>(this);
+        remainingDelay = lightsOffDelay;
         LightsOffDelayed();
     }
 
@@ -34,6 +38,8 @@ public class LightManager : MonoBehaviour
         GridManager.GemCollected += EnableLight;
         PlatformMovement.OnPlatformMovementComplete += LightsOffDelayed;
         PlayerController.OnPlayerDamage += DisableLight;
+        GameManager.OnGamePause += Pause;
+        GameManager.OnGameResume += Resume;
         GameManager.OnGameEnd += GameOver;
     }
     private void OnDisable()
@@ -42,27 +48,48 @@ public class LightManager : MonoBehaviour
         inputReader.LightEnabledEvent -= ToggleLight;
         PlayerController.OnPlayerDamage -= DisableLight;
         PlatformMovement.OnPlatformMovementComplete -= LightsOffDelayed;
+        GameManager.OnGamePause -= Pause;
+        GameManager.OnGameResume -= Resume;
         GameManager.OnGameEnd -= GameOver;
     }
 
     void DisableLight(int a)
     {
-        DisableLight();
+        EnableLight(false);
     }
-    public void LightsOffDelayed() => StartCoroutine(LightsOffDelay());
 
-    public void GameOver()
+    void Pause()
     {
-        StopAllCoroutines();
-        moving = false;
-        ToggleLight(false);
+        if (lightsOffCoroutine != null)
+        {
+            StopCoroutine(lightsOffCoroutine);
+            remainingDelay = lightsOffDelay - timer;
+        }
     }
-    public IEnumerator LightsOffDelay()
+    void Resume()
     {
-        yield return Helpers.GetWait(lightsOffDelay);
+        LightsOffDelayed();
+    }
+    public void LightsOffDelayed()
+    {
+        if (lightsOffCoroutine != null)
+        {
+            StopCoroutine(lightsOffCoroutine);
+        }
+        lightsOffCoroutine = StartCoroutine(LightsOffDelay(remainingDelay));
+    }
+
+    public IEnumerator LightsOffDelay(float delay)
+    {
+        while (timer < delay)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
         moving = false;
         ToggleLight(false);
         DelayedLightOff?.Invoke();
+        timer = 0;
     }
 
     [ButtonGroup]
@@ -72,11 +99,17 @@ public class LightManager : MonoBehaviour
         moving = true;
     }
 
-    [ButtonGroup]
-    void DisableLight() => ToggleLight(false);
+    public void GameOver()
+    {
+        StopAllCoroutines();
+        moving = false;
+        ToggleLight(false);
+    }
+
     public void ToggleLight(bool lightActive)
     {
-        if (moving) return;
+        if (moving)
+            return;
 
         LightEnabled?.Invoke(lightActive);
         cameraManager?.ChangeCamera(lightActive);

@@ -1,0 +1,4 @@
+(0.1) Release notes:
+- Added undo (CTRL+Z) / redo (CTRL+Y)
+- Pressing Enter returns the scroll to the left
+- Added the possibility of opening a .txt file by right-clicking on it then "Open with NotePad+"

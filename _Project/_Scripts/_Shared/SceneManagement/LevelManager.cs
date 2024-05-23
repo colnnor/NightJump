@@ -5,10 +5,18 @@ using Eflatun.SceneReference;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Threading.Tasks;
+using System;
+using Sirenix.OdinInspector;
+
+public enum SceneType
+{
+    MainMenu,
+    GamePlay
+}
 
 public class LevelManager : MonoBehaviour
 {
-    public static LevelManager instance;
+    public static LevelManager Instance;
 
     [SerializeField] private bool disableCanvasOnStart;
     [SerializeField] private GameObject loadingCanvas;
@@ -16,13 +24,17 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private Image progressBar;
     [SerializeField] private List<SceneReference> scenesToLoad;
 
+    public Dictionary<SceneReference, SceneType> ScenesDictionary;
+
     int currenScene;
+    
+    public static event Action<SceneType> OnSceneLoaded;
 
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -33,8 +45,13 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
+        ScenesDictionary = new()
+        {
+            { scenesToLoad[0] , SceneType.MainMenu},
+            { scenesToLoad[1] , SceneType.GamePlay }
+        };
+
         LoadScene(0);
-        
     }
 
     public void LoadNextScene()
@@ -58,8 +75,14 @@ public class LevelManager : MonoBehaviour
         } while (scene.progress < 0.9f);
 
         scene.allowSceneActivation = true;
-        if(disableCanvasOnStart)
-        EnableLoadingCanvas(false); 
+
+        SceneType type = index == 0 ? SceneType.MainMenu : SceneType.GamePlay;
+        OnSceneLoaded?.Invoke(type);
+
+        if (disableCanvasOnStart)
+        {
+            EnableLoadingCanvas(false); 
+        }
     }
 
     public void EnableLoadingCanvas(bool enabled = true)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerFXHandler : MonoBehaviour, IDependencyProvider
+public class PlayerFXHandler : MonoBehaviour
 {
     [SerializeField] private PlayerController playerController;
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class UIHealth : MonoBehaviour, IDependencyProvider
+public class UIHealth : MonoBehaviour
 {
     [SerializeField] private GameObject heartsTemplate;
 
@@ -20,14 +20,15 @@ public class UIHealth : MonoBehaviour, IDependencyProvider
 
     private void Start()
     {
-        playerHealth = ServiceLocator.Instance.GetService<PlayerController>(this);  
+        playerHealth = ServiceLocator.Instance.GetService<PlayerController>(this);
+        Debug.Log($"Setting hearts for player with health {playerHealth.Health}");
         for (int i = 0; i < playerHealth.Health; i++)
         {
             GameObject heart = Instantiate(heartsTemplate, transform);
             hearts.Add(heart);
         }
-
         heartsTemplate.SetActive(false);
+        UpdateHealth(playerHealth.Health);
     }
 
     public void UpdateHealth(int health)

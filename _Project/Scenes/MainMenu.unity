@@ -4617,7 +4617,7 @@ PrefabInstance:
     - target: {fileID: 4928869653252832309, guid: e8ffbbab6f1f1c840a042100f53b1fcc,
         type: 3}
       propertyPath: m_Name
-      value: 4
+      value: SFX
       objectReference: {fileID: 0}
     - target: {fileID: 7914548660541245127, guid: e8ffbbab6f1f1c840a042100f53b1fcc,
         type: 3}
@@ -7764,7 +7764,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 734753987}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51789ec312bbdd843b65ea979796eb72, type: 3}
+  m_Script: {fileID: 11500000, guid: 7ecf2e92a6af2d241822926bc702e8ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   EnterAnimation: 0
@@ -9203,7 +9203,7 @@ PrefabInstance:
     - target: {fileID: 4928869653252832309, guid: e8ffbbab6f1f1c840a042100f53b1fcc,
         type: 3}
       propertyPath: m_Name
-      value: 2
+      value: Music
       objectReference: {fileID: 0}
     - target: {fileID: 7914548660541245127, guid: e8ffbbab6f1f1c840a042100f53b1fcc,
         type: 3}
@@ -15454,7 +15454,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -1080}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1233167489
@@ -17220,7 +17220,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.1981132, g: 0.06634924, b: 0.06634924, a: 0}
+  m_Color: {r: 0.1981132, g: 0.06634924, b: 0.06634924, a: 0.7294118}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -18017,6 +18017,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 13260800658161861, guid: e8ffbbab6f1f1c840a042100f53b1fcc,
         type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 13260800658161861, guid: e8ffbbab6f1f1c840a042100f53b1fcc,
+        type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
@@ -18310,7 +18315,7 @@ PrefabInstance:
     - target: {fileID: 4928869653252832309, guid: e8ffbbab6f1f1c840a042100f53b1fcc,
         type: 3}
       propertyPath: m_Name
-      value: 22
+      value: Master
       objectReference: {fileID: 0}
     - target: {fileID: 7914548660541245127, guid: e8ffbbab6f1f1c840a042100f53b1fcc,
         type: 3}
@@ -18874,7 +18879,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1920, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1496505341
@@ -18904,6 +18909,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43d4ab517b35ed54081176d9f3c8fd94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioSettings: {fileID: 11400000, guid: 20505e63d6496c44b95d9bdf14698046, type: 2}
+  masterSlider: {fileID: 137355034}
+  musicSlider: {fileID: 905980653}
+  sfxSlider: {fileID: 1949376055}
 --- !u!114 &1496505343
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20813,9 +20822,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0bca9d5bc310164fa1ff8ab0b437e05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainPanel: {fileID: 734753992}
-  settingsPanel: {fileID: 1496505341}
-  confirmQuitPanel: {fileID: 1233167489}
+  mainPanel: {fileID: 734753987}
+  settingsPanel: {fileID: 1496505338}
+  confirmQuitPanel: {fileID: 1233167484}
   sceneLoaded: {fileID: 11400000, guid: 5984772b6b7e71e40b7df411ecdf18c3, type: 2}
   feedbacks: {fileID: 1359844703}
 --- !u!114 &1593067481
@@ -21622,17 +21631,17 @@ PrefabInstance:
     - target: {fileID: 699235611728556394, guid: 0d43b7cf328cdbd4aab078f68ba15a21,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 699235611728556394, guid: 0d43b7cf328cdbd4aab078f68ba15a21,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 699235611728556394, guid: 0d43b7cf328cdbd4aab078f68ba15a21,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 699235611728556394, guid: 0d43b7cf328cdbd4aab078f68ba15a21,
         type: 3}
@@ -24736,7 +24745,7 @@ GameObject:
   - component: {fileID: 1918490963}
   - component: {fileID: 1918490964}
   m_Layer: 0
-  m_Name: Sub
+  m_Name: Sliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28781,7 +28790,7 @@ PrefabInstance:
     - target: {fileID: 4928869653252832309, guid: e8ffbbab6f1f1c840a042100f53b1fcc,
         type: 3}
       propertyPath: m_Name
-      value: 1
+      value: Audio
       objectReference: {fileID: 0}
     - target: {fileID: 7914548660541245127, guid: e8ffbbab6f1f1c840a042100f53b1fcc,
         type: 3}

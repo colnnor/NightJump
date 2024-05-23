@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 
-public class PlayerAudio : MonoBehaviour, IDependencyProvider
+public class PlayerAudio : MonoBehaviour
 {
-    [Provide] PlayerAudio ProvidePlayerAudio() => this;
-
     [SerializeField] private AudioManager audioManager;
 
     [SerializeField] private AudioClip jumpSound;
@@ -29,7 +27,7 @@ public class PlayerAudio : MonoBehaviour, IDependencyProvider
         PlayerController.OnPlayerDeath -= PlayDeathSound;
         PlayerController.OnPlayerDamage -= PlayDamageSound;
     }
-    public void PlayJumpSound() => audioManager.PlayOneShot(SFXType.Jump);
+    public void PlayJumpSound() => audioManager?.PlayOneShot(SFXType.Jump);
     public void PlayDamageSound(int value) => audioManager.PlayOneShot(SFXType.Damage);
     public void PlayDeathSound()
     {

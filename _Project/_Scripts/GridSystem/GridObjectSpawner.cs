@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class GridObjectSpawner : MonoBehaviour, IDependencyProvider
+public class GridObjectSpawner : MonoBehaviour
 {
 
     GridObjectSpawner ProvideGridObjectSpawner() => this;

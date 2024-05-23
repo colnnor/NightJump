@@ -2,10 +2,8 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class EnemyController : MonoBehaviour, IDeadly, IDependencyProvider
+public class EnemyController : MonoBehaviour, IDeadly
 {
-    [SerializeField] private GridManager gridManager;
-    [SerializeField] private GameManager gameManager;
 
     [SerializeField] private EnemyMovementValues enemyMovementValues;
     [SerializeField] private InputReader inputReader;
@@ -16,14 +14,26 @@ public class EnemyController : MonoBehaviour, IDeadly, IDependencyProvider
     [SerializeField] private float lightSpeedMultiplier = .25f;
 
     private List<Node> pathToGem;
+    private GridManager gridManager;
+    private GameManager gameManager;
+    
     private bool endOfPathReached;
     private bool canMove;
+    public bool CollectedGem { get; private set;}
+
+    private Collider enemyCollider;
+    
     private int currentPosition = 0;
+    private int enemyJumpHash;
+   
     private float fastTranslationTime;
     private float slowTranslationTime;
     private float currentTranslationTime;
-
-    private int enemyJumpHash;
+    private void Awake()
+    {
+        ServiceLocator.Instance.RegisterService(this);
+        enemyCollider = GetComponent<Collider>();
+    }
 
     private void Start()
     {
@@ -42,7 +52,7 @@ public class EnemyController : MonoBehaviour, IDeadly, IDependencyProvider
 
         GameManager.OnGameEnd += EndGame;
         GameManager.OnGamePause += PauseGame;
-        GameManager.OnGameResume += OnGameStart;
+        GameManager.OnGameResume += OnGameResume;
         LightManager.DelayedLightOff += OnGameStart;
         inputReader.LightEnabledEvent += OnLightEnabled;
         GridManager.GemCollected += OnGemCollected;
@@ -50,9 +60,11 @@ public class EnemyController : MonoBehaviour, IDeadly, IDependencyProvider
 
     private void OnDisable()
     {
+        ServiceLocator.Instance.DeregisterService(this);
+
         GameManager.OnGameEnd -= EndGame;
         GameManager.OnGamePause -= PauseGame;
-        GameManager.OnGameResume -= OnGameStart;
+        GameManager.OnGameResume -= OnGameResume;
         LightManager.DelayedLightOff -= OnGameStart;
         inputReader.LightEnabledEvent -= OnLightEnabled;
         GridManager.GemCollected -= OnGemCollected;
@@ -75,18 +87,27 @@ public class EnemyController : MonoBehaviour, IDeadly, IDependencyProvider
 
     void EnableMovement(bool value = true)
     {
+        enemyCollider.enabled = true;
         canMove = value;
         CanMove = value;    
     }
 
+    private void OnGameResume()
+    {
+        if(CollectedGem) return;
+        EnableMovement();
+        currentTranslationTime = slowTranslationTime;
+    }
     private void OnGameStart()
     {
+        CollectedGem = false;   
         EnableMovement();
         currentTranslationTime = slowTranslationTime;
     }
     private void OnGemCollected(bool value)
     {
-        Debug.Log($"this gameobjet's name is {gameObject.name} + {transform}");
+        CollectedGem = true;
+        enemyCollider.enabled = false;
         StopAllCoroutines();
         if (transform)
         {

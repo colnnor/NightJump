@@ -45,5 +45,9 @@ public class Text : CustomUIComponent
         text.material.SetColor("_UnderlayColor", underlayColor);
     }
 
-    public void UpdateText(string newText) => text.text = newText;
+    public void UpdateText(string newText)
+    {
+        if(text)
+            text.text = newText;
+    }
 }

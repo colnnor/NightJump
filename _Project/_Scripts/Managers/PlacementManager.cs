@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlacementManager : MonoBehaviour, IDependencyProvider
+public class PlacementManager : MonoBehaviour
 {
-    [Provide] public PlacementManager ProvidePlacementManager() => this;
     [SerializeField] private PrefabsProvider prefabsProvider;
 
     [SerializeField] private GameObject movingPlatform;

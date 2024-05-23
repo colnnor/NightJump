@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GameManager : MonoBehaviour, IDependencyProvider
+public class GameManager : MonoBehaviour
 {
     public static event Action OnGameStart;
     public static event Action OnGamePause;
@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour, IDependencyProvider
     public int Score => score;
     public int InitialGridsToCreate => initialGridsToCreate;
     public bool GameOver => gameOver;
-    private bool isPaused;
+    [SerializeField] private bool isPaused;
 
     private void Awake()
     {
@@ -102,13 +102,11 @@ public class GameManager : MonoBehaviour, IDependencyProvider
     public void Pause()
     {
         isPaused = true;
-        inputReader.SwitchActionMap(uiInputMap);
         OnGamePause?.Invoke();
     }
     public void Resume()
     {
         isPaused = false;
-        inputReader.SwitchActionMap(playerInputMap);
         OnGameResume?.Invoke();
     }
 }

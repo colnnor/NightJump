@@ -5,13 +5,10 @@ using UnityEngine.UI;
 using TMPro ;
 using System;
 
-public class HudUIManager : MonoBehaviour, IDependencyProvider
+public class HudUIManager : MonoBehaviour
 {
-    [Provide] HudUIManager ProvideUIManager() => this;
     [SerializeField] private UIHealth uiHealth;
 
-
-    [SerializeField] private TextMeshProUGUI scoreText;
     private void Awake()
     {
         ServiceLocator.Instance.RegisterService<HudUIManager>(this);

@@ -5,13 +5,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainMenuManager : MonoBehaviour, IDependencyProvider
+public class MainMenuManager : MonoBehaviour
 {
-    [Provide] private MainMenuManager ProvideMainMenuManager() => this;
+    public static event Action Play;
 
-    [SerializeField] private Container mainPanel;
-    [SerializeField] private Container settingsPanel;
-    [SerializeField] private Container confirmQuitPanel;
+    [SerializeField] private GameObject mainPanel;
+    [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private GameObject confirmQuitPanel;
     [SerializeField] private EventChannel sceneLoaded;
 
     [Title("Feedbacks")]
@@ -33,6 +33,7 @@ public class MainMenuManager : MonoBehaviour, IDependencyProvider
     }
     private void Start()
     {
+        SetMenuState(MenuState.Main);
         sceneLoaded?.Invoke(new Empty());
     }
     public void UIClick()
@@ -40,6 +41,24 @@ public class MainMenuManager : MonoBehaviour, IDependencyProvider
         AudioManager.Instance.PlayOneShot(SFXType.ButtonClickPositive, randomPitch: true);
         feedbacks?.PlayFeedbacks();
     }
+    public void PlayPressed()
+    {
+        Play?.Invoke();
+    }
+
+    public void SetMenuState(MenuState state)
+    {
+        settingsPanel.SetActive(state == MenuState.Settings);
+        confirmQuitPanel.SetActive(state == MenuState.GameOver);
+        mainPanel.SetActive(state == MenuState.Main);
+    }
+
+    public void ShowMainPanel() => SetMenuState(MenuState.Main);
+    public void ShowSettings() => SetMenuState(MenuState.Settings);
+    public void ShowConfirmQuitPanel() => SetMenuState(MenuState.GameOver);
+
+
+    #region manuals
     [Button]
     void ManualMainPage()
     {
@@ -61,26 +80,7 @@ public class MainMenuManager : MonoBehaviour, IDependencyProvider
         settingsPanel.transform.localPosition = Vector3.zero.With(x: 1920);
         confirmQuitPanel.transform.localPosition = center;
     }
-    public void ShowMainPanel()
-    {
-        settingsPanel.AnimateContainerOut();
-        confirmQuitPanel.AnimateContainerOut();
-        mainPanel.AnimateContainerIn();
-    }
-
-    public void ShowSettings()
-    {
-        settingsPanel.AnimateContainerIn();
-        mainPanel.AnimateContainerOut();
-        confirmQuitPanel.AnimateContainerOut();
-    }
-
-    public void ShowConfirmQuitPanel()
-    {
-        confirmQuitPanel.AnimateContainerIn();
-        settingsPanel.AnimateContainerOut();
-        mainPanel.AnimateContainerOut();
-    }
+    #endregion
 }
 
 public enum ContainerAnimation

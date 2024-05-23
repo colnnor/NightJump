@@ -50,13 +50,13 @@ public class GameManager : MonoBehaviour, IDependencyProvider
     }
     private void OnDisable()
     {
+        ServiceLocator.Instance.DeregisterService<GameManager>(this);
         PlayerController.OnPlayerDeath -= EndGame;
         inputReader.PauseEvent -= OnPause;
         GridManager.GemCollected -= IncreaseScore;
     }
     private void IncreaseScore(bool value)
     {
-        Debug.Log("Increasing score");
         if (value)
         {
             score++;

@@ -23,6 +23,7 @@ public class CameraManager : MonoBehaviour, IDependencyProvider
 
     private void OnDisable()
     {
+        ServiceLocator.Instance.DeregisterService<CameraManager>(this);
         GridManager.GemCollected -= JumpToNextPosition;
         GameManager.OnGameEnd -= GameOver;
     }
@@ -51,7 +52,6 @@ public class CameraManager : MonoBehaviour, IDependencyProvider
 
     public void JumpToNextPosition(bool value)
     {
-        Debug.Log("Jumping to next position");
         StartCoroutine(JumpPosition());
     }
 

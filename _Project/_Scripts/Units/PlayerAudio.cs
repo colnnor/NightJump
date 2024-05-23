@@ -25,6 +25,7 @@ public class PlayerAudio : MonoBehaviour, IDependencyProvider
 
     private void OnDisable()
     {
+        ServiceLocator.Instance.DeregisterService<PlayerAudio>(this);
         PlayerController.OnPlayerDeath -= PlayDeathSound;
         PlayerController.OnPlayerDamage -= PlayDamageSound;
     }

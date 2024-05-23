@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class Bootstrapper : PersistentSingleton<Bootstrapper>
 {
-    [SerializeField] static bool staticStartWithBootstrapper = false;
+    [SerializeField] static bool staticStartWithBootstrapper = true;
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     static async void Init()
     {

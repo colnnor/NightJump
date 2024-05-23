@@ -51,7 +51,6 @@ public class PlatformMovement : MonoBehaviour
 
     public void MovePlatform(bool value)
     {
-        Debug.Log("Moving platform");
         if(gameManager.GameOver) return;
         currentEndPoint = gridManager.GetOrigin();
         CalculateCenterPoint();

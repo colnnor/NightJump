@@ -13,7 +13,10 @@ public class UIHealth : MonoBehaviour, IDependencyProvider
     {
         ServiceLocator.Instance.RegisterService<UIHealth>(this);
     }
-
+    private void OnDisable()
+    {
+        ServiceLocator.Instance.DeregisterService<UIHealth>(this);
+    }
 
     private void Start()
     {

@@ -26,6 +26,7 @@ public class HudUIManager : MonoBehaviour, IDependencyProvider
     }
     private void OnDisable()
     {
+        ServiceLocator.Instance.DeregisterService<HudUIManager>(this);
         PlayerController.OnPlayerDamage -= TakeDamage;
     }
     public void TakeDamage(int health) => uiHealth.UpdateHealth(health);

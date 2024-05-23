@@ -26,6 +26,11 @@ public class MainMenuManager : MonoBehaviour, IDependencyProvider
     {
         ServiceLocator.Instance.RegisterService<MainMenuManager>(this);
     }
+
+    private void OnDestroy()
+    {
+        ServiceLocator.Instance.DeregisterService<MainMenuManager>(this);
+    }
     private void Start()
     {
         sceneLoaded?.Invoke(new Empty());

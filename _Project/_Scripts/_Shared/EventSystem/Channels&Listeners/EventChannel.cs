@@ -11,7 +11,6 @@ public abstract class EventChannel<T> : ScriptableObject
 
     public void Invoke(T value)
     {
-        Debug.Log("Invoked");
         foreach (EventListener<T> listener in observers)
         {
             listener.Raise(value);

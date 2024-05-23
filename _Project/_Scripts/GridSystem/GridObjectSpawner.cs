@@ -28,7 +28,10 @@ public class GridObjectSpawner : MonoBehaviour, IDependencyProvider
     {
         ServiceLocator.Instance.RegisterService<GridObjectSpawner>(this);
     }
-
+    private void OnDisable()
+    {
+        ServiceLocator.Instance.DeregisterService<GridObjectSpawner>(this);
+    }
 
     float tileYPosition = 0;
 

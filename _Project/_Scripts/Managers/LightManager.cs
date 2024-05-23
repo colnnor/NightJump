@@ -68,7 +68,6 @@ public class LightManager : MonoBehaviour
     [ButtonGroup]
     void EnableLight(bool value = true)
     {
-        Debug.Log("Enabling light");
         ToggleLight(true);
         moving = true;
     }

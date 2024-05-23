@@ -126,6 +126,7 @@ public class PlayerController : MonoBehaviour, IDependencyProvider
     }
     private void OnDisable()
     {
+        ServiceLocator.Instance.DeregisterService<PlayerController>(this);
         GameManager.OnGameStart -= StartGame;
         LightManager.DelayedLightOff -= StartLevel;
         PlatformMovement.OnPlatformMovementComplete -= LandedAtNewGrid;
@@ -171,7 +172,6 @@ public class PlayerController : MonoBehaviour, IDependencyProvider
     }
     public void GemCollected(bool value)
     {
-        Debug.Log("Gem collected");
         if(gameManager.GameOver) return;
         if (!value)
         {

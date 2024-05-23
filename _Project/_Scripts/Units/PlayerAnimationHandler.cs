@@ -4,29 +4,28 @@ using UnityEngine;
 
 public class PlayerAnimationHandler : MonoBehaviour
 {
-    [SerializeField] private PlayerController playerMovement;
-
     [SerializeField] private float animationTime = .15f;
     [SerializeField] private InputReader inputReader;
 
     private const string JUMP = "Jump";
-    public Animator animator;
+    [SerializeField] Animator animator;
     private bool isAnimating;
 
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
         inputReader.AnyPressed += AnyPressed;
     }
-    private void Start()
+
+    private void OnDestroy()
     {
-        playerMovement = ServiceLocator.Instance.GetService<PlayerController>(this);
+        inputReader.AnyPressed -= AnyPressed;
     }
     private void AnyPressed()
     {
         if (isAnimating) return;
         isAnimating = true;
+        Debug.Log( this);
         animator.SetTrigger(JUMP);
         StartCoroutine(ResetIsAnimating());
     }

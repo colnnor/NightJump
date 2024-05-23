@@ -39,16 +39,12 @@ public class ServiceLocator : SerializedMonoBehaviour
         }
     }
 
-    private void OnDestroy()
-    {
-        Destroy(gameObject);    
-    }
-
     public void RegisterService<T>(T service)
     {
         Type type = typeof(T);
         if(!registeredServices.ContainsKey(type))
         {
+            Debug.Log($"Registering service of type {type}");
             registeredServices.Add(type, service);
         }
         else
@@ -63,6 +59,7 @@ public class ServiceLocator : SerializedMonoBehaviour
 
         if (registeredServices.ContainsKey(type))
         {
+            Debug.Log($"Deregistering service of type {type}");
             registeredServices.Remove(type);
         }
         else

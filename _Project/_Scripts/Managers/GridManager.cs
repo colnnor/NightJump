@@ -51,7 +51,6 @@ public class GridManager : MonoBehaviour, IDependencyProvider
     }
     private void OnEnable()
     {
-        ServiceLocator.Instance.RegisterService<GridManager>(this);
         GameManager.AdjustSize += UpdateGridData;
         GameManager.OnGameStart += GameStart;
         Gem.GemCollected += NextGrid;
@@ -89,7 +88,6 @@ public class GridManager : MonoBehaviour, IDependencyProvider
 
     public void NextGrid(bool value)
     {
-        Debug.Log("Next Grid");
         if (currentGridIndex > 0)
         {
             GridGroup finalGroup = gridGroupsDict[totalGridsCreated - 1];
@@ -101,7 +99,6 @@ public class GridManager : MonoBehaviour, IDependencyProvider
         currentGridIndex++;
         currentGridGroup = gridGroupsDict[currentGridIndex];
         SetGemAndEnemyPosition(currentGridGroup);
-        Debug.Log("Gem collected: " + value);   
         GemCollected?.Invoke(value);
     }
 

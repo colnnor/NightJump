@@ -24,6 +24,7 @@ public class FeedbacksManager : MonoBehaviour, IDependencyProvider
 
     private void OnDisable()
     {
+        ServiceLocator.Instance.DeregisterService<FeedbacksManager>(this);
         PlayerController.OnPlayerDamage -= PlayDamageFeedback;
     }
     public void PlayJumpFeedback() => jumpFeedback.PlayFeedbacks();

@@ -85,7 +85,6 @@ public class EnemyController : MonoBehaviour, IDeadly, IDependencyProvider
     }
     private void OnGemCollected(bool value)
     {
-        Debug.Log("Gem collected");
         StopAllCoroutines();
         transform.DOKill();
         transform.rotation = Quaternion.Euler(new(0, 180, 0));

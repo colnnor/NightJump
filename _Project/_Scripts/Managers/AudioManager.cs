@@ -42,7 +42,10 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private bool playMusicOnAwake;
     private Dictionary<SFXType, AudioClip> clips = new();
 
-    private const string k_MasterVolume = "MasterVolume";
+    private const string MASTER_VOLUME = "MasterVolume";
+    private const string LOWPASS_CUTOFF = "LowpassCutoff";
+    private const float LOWPASS_NORMAL_VALUE = 22000f;
+    private const float LOWPASS_CUTTOFF_VALUE = 5000f;
 
     private AudioSource SFXSource
     {
@@ -60,19 +63,61 @@ public class AudioManager : MonoBehaviour
             return musicSource;
         }
     }
-    protected  void Awake()
+    private void Awake()
     {
         if(Instance != null)
         {
             Destroy(gameObject);
+            Debug.LogWarning("Multiple instances of AudioManager detected. Destroying duplicate...");
             return;
         }
         Instance = this;
+        DontDestroyOnLoad(gameObject);  
+    }
+
+    private void OnEnable()
+    {
+        GameManager.OnGameResume += Resume;
+        GameManager.OnGamePause += Pause;
+    }
+
+    private void Resume()
+    {
+        ResetLowpass();
+        audioMixer.SetFloat(MASTER_VOLUME, audioSettings.masterVolume);
+    }
+
+
+    private void Pause()
+    {
+        EnforceLowpass();
+        float volume = audioSettings.masterVolume < 0 ? audioSettings.masterVolume * 2 : audioSettings.masterVolume / 2;
+        audioMixer.SetFloat(MASTER_VOLUME, volume);
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnGameResume -= Resume;
+        GameManager.OnGamePause -= Pause;
+    }
+    private void ResetLowpass()
+    {
+        audioMixer.SetFloat(LOWPASS_CUTOFF, LOWPASS_NORMAL_VALUE);
+    }
+
+    private void EnforceLowpass()
+    {
+        audioMixer.SetFloat(LOWPASS_CUTOFF, LOWPASS_CUTTOFF_VALUE);
     }
 
     private void Start()
     {
-        if (playMusicOnAwake) PlayMusic(musicClip);
+        if (playMusicOnAwake)
+        { 
+            PlayMusic(musicClip); 
+        }
+
+
         InitializeDictionary();
         ResetSourceVolumes();
     }
@@ -81,7 +126,7 @@ public class AudioManager : MonoBehaviour
     {
         if (!overrideMixer) return;
 
-                audioSettings.sfxVolume = 1.0f;
+        audioSettings.sfxVolume = 1.0f;
         audioSettings.musicVolume = 1.0f;
         audioSettings.masterVolume = 0;
         InitializeSourceVolumes();
@@ -93,7 +138,8 @@ public class AudioManager : MonoBehaviour
         sfxSource.volume = audioSettings.sfxVolume;
         musicSource.volume = audioSettings.musicVolume;
 
-        audioMixer.SetFloat(k_MasterVolume, audioSettings.masterVolume);
+        audioMixer.SetFloat(MASTER_VOLUME, audioSettings.masterVolume);
+        ResetLowpass();
     }
     private void InitializeDictionary()
     {
@@ -149,7 +195,7 @@ public class AudioManager : MonoBehaviour
         if (!overrideMixer) return;
 
         audioSettings.masterVolume = volume;
-        audioMixer.SetFloat(k_MasterVolume, volume);
+        audioMixer.SetFloat(MASTER_VOLUME, volume);
     }
 #endregion
 

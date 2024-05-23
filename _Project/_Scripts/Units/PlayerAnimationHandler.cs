@@ -15,6 +15,8 @@ public class PlayerAnimationHandler : MonoBehaviour
     private void Awake()
     {
         inputReader.AnyPressed += AnyPressed;
+
+
     }
 
     private void OnDestroy()
@@ -25,6 +27,7 @@ public class PlayerAnimationHandler : MonoBehaviour
     {
         if (isAnimating) return;
         isAnimating = true;
+
         Debug.Log( this);
         animator.SetTrigger(JUMP);
         StartCoroutine(ResetIsAnimating());

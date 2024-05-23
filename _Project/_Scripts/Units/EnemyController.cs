@@ -38,11 +38,12 @@ public class EnemyController : MonoBehaviour, IDeadly, IDependencyProvider
 
     private void OnEnable()
     {
+        enemyJumpHash = Animator.StringToHash("Jump");
+
         GameManager.OnGameEnd += EndGame;
         GameManager.OnGamePause += PauseGame;
         GameManager.OnGameResume += OnGameStart;
         LightManager.DelayedLightOff += OnGameStart;
-        enemyJumpHash = Animator.StringToHash("Jump");
         inputReader.LightEnabledEvent += OnLightEnabled;
         GridManager.GemCollected += OnGemCollected;
     }
@@ -85,9 +86,14 @@ public class EnemyController : MonoBehaviour, IDeadly, IDependencyProvider
     }
     private void OnGemCollected(bool value)
     {
+        Debug.Log($"this gameobjet's name is {gameObject.name} + {transform}");
         StopAllCoroutines();
+        if (transform)
+        {
         transform.DOKill();
         transform.rotation = Quaternion.Euler(new(0, 180, 0));
+
+        }
         endOfPathReached = false;
         currentPosition = 0;
         canMove = false;

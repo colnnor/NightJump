@@ -20824,7 +20824,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainPanel: {fileID: 734753987}
   settingsPanel: {fileID: 1496505338}
-  confirmQuitPanel: {fileID: 1233167484}
+  gameOverMenu: {fileID: 1233167484}
+  animTime: 0.2
+  easeType: 13
   sceneLoaded: {fileID: 11400000, guid: 5984772b6b7e71e40b7df411ecdf18c3, type: 2}
   feedbacks: {fileID: 1359844703}
 --- !u!114 &1593067481

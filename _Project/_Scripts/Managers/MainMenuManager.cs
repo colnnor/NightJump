@@ -61,7 +61,7 @@ public class MainMenuManager : MonoBehaviour
     public void ShowSettings() => SetMenuState(MenuState.Settings, animTime);
     public void ShowConfirmQuitPanel() => SetMenuState(MenuState.GameOver, animTime);
 
-    private void SetMenuState(MenuState state, float? animTime = null)
+    private void SetMenuState(MenuState state, float? animTime = 0)
     {
         float animationTime = animTime ?? this.animTime;
 

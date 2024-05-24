@@ -4176,6 +4176,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: 2454
       objectReference: {fileID: 0}
+    - target: {fileID: 9110193860168246382, guid: e010a2908a32e6f4f8ab65f3e76e1220,
+        type: 3}
+      propertyPath: _text
+      value: Quit
+      objectReference: {fileID: 0}
+    - target: {fileID: 9110193860168246382, guid: e010a2908a32e6f4f8ab65f3e76e1220,
+        type: 3}
+      propertyPath: defaultBehaviorsTags.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9110193860168246382, guid: e010a2908a32e6f4f8ab65f3e76e1220,
+        type: 3}
+      propertyPath: 'defaultBehaviorsTags.Array.data[1]'
+      value: shake
+      objectReference: {fileID: 0}
+    - target: {fileID: 9110193860168246382, guid: e010a2908a32e6f4f8ab65f3e76e1220,
+        type: 3}
+      propertyPath: 'defaultBehaviorsTags.Array.data[2]'
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -15445,8 +15465,8 @@ RectTransform:
   m_GameObject: {fileID: 1233167484}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1960506481}
   - {fileID: 130038464}
@@ -18868,8 +18888,8 @@ RectTransform:
   m_GameObject: {fileID: 1496505338}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1507212159}
   - {fileID: 1952593707}
@@ -28471,8 +28491,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8394781277130718800, guid: e8ffbbab6f1f1c840a042100f53b1fcc,
         type: 3}
+      propertyPath: fontSize
+      value: 217
+      objectReference: {fileID: 0}
+    - target: {fileID: 8394781277130718800, guid: e8ffbbab6f1f1c840a042100f53b1fcc,
+        type: 3}
       propertyPath: textString
       value: Are you sure?
+      objectReference: {fileID: 0}
+    - target: {fileID: 8394781277130718800, guid: e8ffbbab6f1f1c840a042100f53b1fcc,
+        type: 3}
+      propertyPath: overrideFontSize
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

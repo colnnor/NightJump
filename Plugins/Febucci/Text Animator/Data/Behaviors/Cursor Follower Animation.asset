@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 144066a43449f48469b89b2e2c9ab37d, type: 3}
-  m_Name: ShakeBehavior
+  m_Script: {fileID: 11500000, guid: b3eebed5e113a7441b0fb68c694fa8dd, type: 3}
+  m_Name: Cursor Follower Animation
   m_EditorClassIdentifier: 
-  tagID: shake
-  baseAmplitude: 0.13
-  baseDelay: 0.16
-  baseWaveSize: 1.41
+  tagID: cursor
+  distanceRanges: {x: 5000, y: 5000}
+  inverted: 1

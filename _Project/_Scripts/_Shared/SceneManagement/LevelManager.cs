@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Eflatun.SceneReference;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Threading.Tasks;
@@ -22,9 +21,6 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameObject loadingCanvas;
     [SerializeField] private GameObject canvasCamera;
     [SerializeField] private Image progressBar;
-    [SerializeField] private List<SceneReference> scenesToLoad;
-
-    public Dictionary<SceneReference, SceneType> ScenesDictionary;
 
     int currenScene;
     
@@ -45,13 +41,7 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        ScenesDictionary = new()
-        {
-            { scenesToLoad[0] , SceneType.MainMenu},
-            { scenesToLoad[1] , SceneType.GamePlay }
-        };
-
-        LoadScene(0);
+        LoadScene(1);
     }
 
     public void LoadNextScene()
@@ -61,10 +51,8 @@ public class LevelManager : MonoBehaviour
     }
     public async void LoadScene(int index)
     {
-        currenScene = index;
-
-        SceneReference reference = scenesToLoad[index];
-        var scene = SceneManager.LoadSceneAsync(reference.Path);
+        //SceneReference reference = scenesToLoad[index];
+        var scene = SceneManager.LoadSceneAsync(index);//reference.Path);
         scene.allowSceneActivation = false; 
 
         EnableLoadingCanvas();
@@ -76,7 +64,7 @@ public class LevelManager : MonoBehaviour
 
         scene.allowSceneActivation = true;
 
-        SceneType type = index == 0 ? SceneType.MainMenu : SceneType.GamePlay;
+        SceneType type = index == 1 ? SceneType.MainMenu : SceneType.GamePlay;
         OnSceneLoaded?.Invoke(type);
 
         if (disableCanvasOnStart)

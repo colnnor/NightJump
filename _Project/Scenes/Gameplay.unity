@@ -1121,7 +1121,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 57.81379
+  field of view: 57.74061
   orthographic: 0
   orthographic size: 10
   m_Depth: -1
@@ -5566,7 +5566,7 @@ MonoBehaviour:
       m_ColorSpace: -1
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
-    m_ColorMin: {r: -5.4088517e-16, g: 4.5912e-41, b: -6.577699e-35, a: 2.52e-43}
+    m_ColorMin: {r: -5.240343e-36, g: 4.5914e-41, b: -0.81587124, a: 1e-45}
     m_ColorMax: {r: 1, g: 1, b: 1, a: 1}
   isBurst: 1
   minNumberOfParticles: 10
@@ -12446,7 +12446,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 0}
   m_Lens:
-    FieldOfView: 57.81379
+    FieldOfView: 57.74061
     OrthographicSize: 10
     NearClipPlane: 0.1
     FarClipPlane: 5000
@@ -20548,6 +20548,11 @@ PrefabInstance:
     - target: {fileID: 7443356848168049656, guid: dd9f4c63a0be4ae4f9ff180c6cb92fe1,
         type: 3}
       propertyPath: maxHealth
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7443356848168049656, guid: dd9f4c63a0be4ae4f9ff180c6cb92fe1,
+        type: 3}
+      propertyPath: currentHealth
       value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []

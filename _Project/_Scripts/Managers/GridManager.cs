@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 public class GridManager : MonoBehaviour
 {
     public static event Action<bool> GemCollected;
-
+    public static event Action OnLevelLoaded;   
     [SerializeField] private GameManager gameManager;
     [SerializeField] private GridObjectSpawner gridObjectSpawner;
 
@@ -20,7 +20,6 @@ public class GridManager : MonoBehaviour
     [SerializeField] private int pathSimilarityLimit;
 
     [Title("Awake Settings")]
-    [SerializeField] private EventChannel sceneLoadedChannel;
     [Range(5, 10)]
     [SerializeField] private int gridDataToStart = 5;
     [SerializeField] private Vector3Int originToStart = Vector3Int.zero;
@@ -82,7 +81,7 @@ public class GridManager : MonoBehaviour
         currentGridGroup = gridGroupsDict[currentGridIndex];
         SetGemAndEnemyPosition(currentGridGroup);
         platformMovement.transform.position = currentGridGroup.GemPosition;
-        sceneLoadedChannel.Invoke(new Empty());
+        OnLevelLoaded?.Invoke();
     }
     
 

@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public static event Action<int> AdjustSize;
 
     [Title("Game Settings")]
+    [SerializeField] private EventChannel sceneLoadedChannel;
     [SerializeField] private int completeLevelsToChangeSize = 5;
     [MinValue(1)]
     [SerializeField] private int initialGridsToCreate = 3;
@@ -26,6 +27,7 @@ public class GameManager : MonoBehaviour
 
     private InputActionMap uiInputMap;
     private InputActionMap playerInputMap;
+    private bool levelLoaded;
 
     private int currentSize = 5;
     private int maxSize = 10;
@@ -44,16 +46,27 @@ public class GameManager : MonoBehaviour
     }
     private void OnEnable()
     {
+        GridManager.OnLevelLoaded += LevelLoaded;
+        inputReader.LightEnabledEvent += LevelLoadedEvent;
         inputReader.PauseEvent += OnPause;
         PlayerController.OnPlayerDeath += EndGame;
         GridManager.GemCollected += IncreaseScore;
     }
+
     private void OnDisable()
     {
+        inputReader.LightEnabledEvent -= LevelLoadedEvent;
+        GridManager.OnLevelLoaded -= LevelLoaded;
         ServiceLocator.Instance.DeregisterService<GameManager>(this);
         PlayerController.OnPlayerDeath -= EndGame;
         inputReader.PauseEvent -= OnPause;
         GridManager.GemCollected -= IncreaseScore;
+    }
+    private void LevelLoaded() => levelLoaded = true;
+
+    void LevelLoadedEvent(bool b)
+    {
+        sceneLoadedChannel.Invoke(new Empty());
     }
     private void IncreaseScore(bool value)
     {

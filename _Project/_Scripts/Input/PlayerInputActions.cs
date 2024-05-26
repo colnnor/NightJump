@@ -32,7 +32,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""name"": ""Forward"",
                     ""type"": ""Button"",
                     ""id"": ""ef9991ed-3f33-4bec-b150-5885ccb7036a"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -41,7 +41,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""name"": ""Right"",
                     ""type"": ""Button"",
                     ""id"": ""cafc038c-c6f1-455c-9bb5-4d2f27f263e2"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -59,7 +59,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""name"": ""Left"",
                     ""type"": ""Button"",
                     ""id"": ""82fa6a50-4039-4566-9c31-f8894a6e68eb"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -74,13 +74,31 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""EnforceLowpass"",
+                    ""name"": ""Pause"",
                     ""type"": ""Button"",
                     ""id"": ""b57990bb-b5d4-4459-b14a-8f8a541c243b"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Touch"",
+                    ""type"": ""Button"",
+                    ""id"": ""1462a299-4b90-4d8c-b0e3-6579c3029294"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Swipe"",
+                    ""type"": ""Value"",
+                    ""id"": ""728dbad9-d254-4632-b5b2-f87f0765460b"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -190,7 +208,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""EnforceLowpass"",
+                    ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -201,7 +219,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""EnforceLowpass"",
+                    ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -212,7 +230,29 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""EnforceLowpass"",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0a5bdabc-2881-4edb-ad69-1ec86dd7b01c"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Touch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2d8663d9-d891-4b80-bdc1-79ef4f68061f"",
+                    ""path"": ""<Touchscreen>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Swipe"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -825,7 +865,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Backward = m_Player.FindAction("Backward", throwIfNotFound: true);
         m_Player_Left = m_Player.FindAction("Left", throwIfNotFound: true);
         m_Player_Light = m_Player.FindAction("Light", throwIfNotFound: true);
-        m_Player_Pause = m_Player.FindAction("EnforceLowpass", throwIfNotFound: true);
+        m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
+        m_Player_Touch = m_Player.FindAction("Touch", throwIfNotFound: true);
+        m_Player_Swipe = m_Player.FindAction("Swipe", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -912,6 +954,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Left;
     private readonly InputAction m_Player_Light;
     private readonly InputAction m_Player_Pause;
+    private readonly InputAction m_Player_Touch;
+    private readonly InputAction m_Player_Swipe;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -922,6 +966,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Left => m_Wrapper.m_Player_Left;
         public InputAction @Light => m_Wrapper.m_Player_Light;
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
+        public InputAction @Touch => m_Wrapper.m_Player_Touch;
+        public InputAction @Swipe => m_Wrapper.m_Player_Swipe;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -949,6 +995,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Pause.started += instance.OnPause;
             @Pause.performed += instance.OnPause;
             @Pause.canceled += instance.OnPause;
+            @Touch.started += instance.OnTouch;
+            @Touch.performed += instance.OnTouch;
+            @Touch.canceled += instance.OnTouch;
+            @Swipe.started += instance.OnSwipe;
+            @Swipe.performed += instance.OnSwipe;
+            @Swipe.canceled += instance.OnSwipe;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -971,6 +1023,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Pause.started -= instance.OnPause;
             @Pause.performed -= instance.OnPause;
             @Pause.canceled -= instance.OnPause;
+            @Touch.started -= instance.OnTouch;
+            @Touch.performed -= instance.OnTouch;
+            @Touch.canceled -= instance.OnTouch;
+            @Swipe.started -= instance.OnSwipe;
+            @Swipe.performed -= instance.OnSwipe;
+            @Swipe.canceled -= instance.OnSwipe;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1167,6 +1225,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnLeft(InputAction.CallbackContext context);
         void OnLight(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnTouch(InputAction.CallbackContext context);
+        void OnSwipe(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

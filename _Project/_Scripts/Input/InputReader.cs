@@ -22,6 +22,8 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions, 
     public event UnityAction LeftEvent;
     public event UnityAction<bool> LightEnabledEvent;
     public event UnityAction AnyPressed;
+    public event UnityAction<Vector2> Swipe;
+    public event UnityAction TouchComplete;
     #endregion
     #region UI
     public event UnityAction<Vector2> OnNavigate;
@@ -149,5 +151,20 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions, 
     public void OnTrackedDevicePosition(InputAction.CallbackContext context) => Debug.Log("");//noop
     public void OnTrackedDeviceOrientation(InputAction.CallbackContext context) => Debug.Log("");//noop
     public void OnExit(InputAction.CallbackContext context) => PauseEvent?.Invoke();
+    public void OnTouch(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Canceled)
+        {
+            TouchComplete?.Invoke();
+        }
+    }
+
+    public void OnSwipe(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            Swipe?.Invoke(context.ReadValue<Vector2>());
+        }
+    }
     #endregion
 }

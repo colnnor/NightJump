@@ -13,11 +13,13 @@ public class PlayerFXHandler : MonoBehaviour
 
     private void OnEnable()
     {
+        PlatformMovement.OnPlatformMovementComplete += PlayShakeParticles;
         PlayerController.OnPlayerDeath += InstantiateDeathFX;
         PlayerController.OnPlayerDamage += PlayerDamage;
     }
     private void OnDisable()
     {
+        PlatformMovement.OnPlatformMovementComplete -= PlayShakeParticles;
         PlayerController.OnPlayerDeath -= InstantiateDeathFX;
         PlayerController.OnPlayerDamage -= PlayerDamage;
     }

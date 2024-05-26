@@ -1,11 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.Threading.Tasks;
 using System;
-using Sirenix.OdinInspector;
 
 public enum SceneType
 {
@@ -18,12 +15,13 @@ public class LevelManager : MonoBehaviour
     public static LevelManager Instance;
 
     [SerializeField] private bool disableCanvasOnStart;
+    [SerializeField] private GameObject pressSpaceToPlay;
     [SerializeField] private GameObject loadingCanvas;
     [SerializeField] private GameObject canvasCamera;
     [SerializeField] private Image progressBar;
 
     int currenScene;
-    
+
     public static event Action<SceneType> OnSceneLoaded;
 
     private void Awake()
@@ -49,27 +47,38 @@ public class LevelManager : MonoBehaviour
         currenScene++;
         LoadScene(currenScene);
     }
-    public async void LoadScene(int index)
+
+    public void LoadScene(int index)
     {
-        //SceneReference reference = scenesToLoad[index];
-        var scene = SceneManager.LoadSceneAsync(index);//reference.Path);
-        scene.allowSceneActivation = false; 
+        StartCoroutine(LoadSceneAsync(index));
+    }
+
+    private IEnumerator LoadSceneAsync(int index)
+    {
+        // Begin to load the Scene you specify
+        var scene = SceneManager.LoadSceneAsync(index);
+        scene.allowSceneActivation = false;
 
         EnableLoadingCanvas();
-        do
+
+        // While the Scene is loading, output the current progress
+        while (scene.progress < 0.9f)
         {
-            await Task.Delay(100);
-            if(progressBar) progressBar.fillAmount = scene.progress;
-        } while (scene.progress < 0.9f);
+            if (progressBar)
+            {
+                progressBar.fillAmount = scene.progress;
+            }
+            yield return null; // Wait for next frame
+        }
 
         scene.allowSceneActivation = true;
 
-        SceneType type = index == 1 ? SceneType.MainMenu : SceneType.GamePlay;
+        SceneType type = index == 0 ? SceneType.MainMenu : SceneType.GamePlay;
         OnSceneLoaded?.Invoke(type);
 
         if (disableCanvasOnStart)
         {
-            EnableLoadingCanvas(false); 
+            EnableLoadingCanvas(false);
         }
     }
 

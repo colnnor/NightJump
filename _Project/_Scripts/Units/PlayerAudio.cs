@@ -2,11 +2,12 @@
 
 public class PlayerAudio : MonoBehaviour
 {
-    [SerializeField] private AudioManager audioManager;
+    private AudioManager audioManager;
 
     [SerializeField] private AudioClip jumpSound;
     [SerializeField] private AudioClip damageSound;
     [SerializeField] private AudioClip deathSound;
+    [SerializeField] private AudioClip landedSound;
     private void Awake()
     {
         ServiceLocator.Instance.RegisterService<PlayerAudio>(this);
@@ -17,16 +18,20 @@ public class PlayerAudio : MonoBehaviour
     }
     private void OnEnable()
     {
+        PlatformMovement.OnPlatformMovementComplete += PlayLandedSound;
         PlayerController.OnPlayerDeath += PlayDeathSound;
         PlayerController.OnPlayerDamage += PlayDamageSound;
     }
 
     private void OnDisable()
     {
+        PlatformMovement.OnPlatformMovementComplete -= PlayLandedSound;
         ServiceLocator.Instance.DeregisterService<PlayerAudio>(this);
         PlayerController.OnPlayerDeath -= PlayDeathSound;
         PlayerController.OnPlayerDamage -= PlayDamageSound;
     }
+
+    public void PlayLandedSound() => audioManager?.PlayOneShot(landedSound);
     public void PlayJumpSound() => audioManager?.PlayOneShot(SFXType.Jump);
     public void PlayDamageSound(int value) => audioManager.PlayOneShot(SFXType.Damage);
     public void PlayDeathSound()

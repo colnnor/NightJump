@@ -211,6 +211,13 @@ public class AudioManager : MonoBehaviour
         clips.Add(SFXType.EnemyCollect, enemyCollectClip);
     }
 
+    public void PlayOneShot(AudioClip clip)
+    {
+        new Builder(SFXSource)
+            .SetClip(clip)
+            .Play();
+    }
+
     public void PlayOneShot(SFXType type, float? volume = null, Vector3? location = null, bool randomPitch = false)
     {
         if (!clips.TryGetValue(type, out AudioClip clip)) throw new System.Exception("Audio clip not found for type");

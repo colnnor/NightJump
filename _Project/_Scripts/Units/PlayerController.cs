@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
 
     [Title("Input")]
     [SerializeField] private InputReader inputReader;
+    [SerializeField] private float minimumSwipeMagnitude = 10f;
 
     [Title("Movement Settings")]
     [SerializeField] private float jumpDuration = 0.5f;
@@ -37,9 +38,10 @@ public class PlayerController : MonoBehaviour
     private Vector3 startPosition;
     private Vector3Int nextPosition;
 
-    private bool isPaused;
     private bool isMoving;
     private bool enemyCollectedGem;
+
+    private Vector2 swipeDirection;
     
     private void Awake()
     {
@@ -97,11 +99,47 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        inputReader.TouchComplete += ProcessTouchComplete;
+        inputReader.Swipe += ProcessSwipeDelta;
         enemyController = ServiceLocator.Instance.GetService<EnemyController>(this);
         gameManager = ServiceLocator.Instance.GetService<GameManager>(this);
         gridManager = ServiceLocator.Instance.GetService<GridManager>(this);
         playerAudio = ServiceLocator.Instance.GetService<PlayerAudio>(this);
     }
+
+    private void ProcessSwipeDelta(Vector2 direction)
+    {
+        swipeDirection = direction;
+    }
+    private void ProcessTouchComplete()
+    {
+        if(MathF.Abs(swipeDirection.magnitude) < minimumSwipeMagnitude) return;
+
+        if (Mathf.Abs(swipeDirection.y) > Mathf.Abs(swipeDirection.x))
+        {
+            if (swipeDirection.y > 0)
+            {
+                JumpForward();
+            }
+            else
+            {
+                JumpBackward();
+            }
+        }
+        else
+        {
+            if (swipeDirection.x > 0)
+            {
+                JumpRight();
+            }
+            else
+            {
+                JumpLeft();
+            }
+        }
+    }
+
+
 
     #region input events
     private void OnAnyPressed() => PlayerJump();
@@ -245,7 +283,7 @@ public class PlayerController : MonoBehaviour
     #region movement methods
     void MoveCharacter(Vector3Int endPosition)
     {
-        if(gridManager.GetNodeType(endPosition) == NodeType.Unwalkable) return;
+        if(gridManager && gridManager.GetNodeType(endPosition) == NodeType.Unwalkable) return;
 
         isMoving = true;
         transform.DOMove(endPosition, jumpDuration).OnComplete(ResetIsMoving);

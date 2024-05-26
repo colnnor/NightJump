@@ -138,6 +138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputReader: {fileID: 11400000, guid: 1727fd206f10326498e963b8f8436635, type: 2}
+  minimumSwipeMagnitude: 10
   jumpDuration: 0.1
   movingPlatform: {fileID: 0}
   playerHealth: {fileID: 7443356848168049656}
@@ -186,8 +187,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5568a7306416a9458d29063079288db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 6
-  currentHealth: 0
+  maxHealth: 3
+  currentHealth: 3
 --- !u!54 &777264254450555274
 Rigidbody:
   m_ObjectHideFlags: 0

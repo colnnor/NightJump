@@ -15,6 +15,7 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions, 
     public bool SpacePressed { get; private set;}
 
     #region Player 
+    public event UnityAction EnterEvent;
     public event UnityAction PauseEvent;
     public event UnityAction ForwardEvent;
     public event UnityAction RightEvent;
@@ -53,7 +54,7 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions, 
         currentActionMap?.Disable();
         currentActionMap = newMap;
         currentActionMap.Enable();
-
+        Debug.Log(newMap.name);
         if (newMap.name == "UI")
             navigateAction.performed += OnNavigatePerformed;
         
@@ -65,6 +66,7 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions, 
     }
     public void EnableInputActions(bool enabled = true)
     {
+        Debug.Log("Input actions enabled: " + enabled);
         if (enabled)
             inputActions.Enable();
         else
@@ -107,7 +109,6 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions, 
 
     public void OnLight(InputAction.CallbackContext context)
     {
-        
         if(!playerCanMove) return;
         if(context.phase == InputActionPhase.Started)
         {
@@ -166,5 +167,7 @@ public class InputReader : ScriptableObject, PlayerInputActions.IPlayerActions, 
             Swipe?.Invoke(context.ReadValue<Vector2>());
         }
     }
+
+    public void OnEnter(InputAction.CallbackContext context) => EnterEvent?.Invoke();
     #endregion
 }

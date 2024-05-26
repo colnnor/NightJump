@@ -28,5 +28,5 @@ AssetOrigin:
   productId: 206665
   packageName: All In 1 Vfx Toolkit
   packageVersion: 1.6
-  assetPath: Assets/AllIn1VfxToolkit/Shaders/Resources/AllIn1VfxBuiltIn.shader
+  assetPath: Assets/External/AllIn1VfxToolkit/Shaders/Resources/AllIn1VfxBuiltIn.shader
   uploadId: 659577

@@ -12,7 +12,6 @@ public class PlayerController : MonoBehaviour
     
     private GameManager gameManager;
     private PlayerAudio playerAudio;
-    private FeedbacksManager feedbacksManager;
     private GridManager gridManager;
 
     [Title("Input")]
@@ -55,7 +54,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        GameManager.OnGameStart += StartGame;
+        GameManager.OnInitialize += StartGame;
         GameManager.OnGamePause += Pause;
         GameManager.OnGameResume += Resume;
         LightManager.DelayedLightOff += StartLevel;
@@ -68,25 +67,13 @@ public class PlayerController : MonoBehaviour
         inputReader.AnyPressed += OnAnyPressed;
     }
 
-    private void Pause()
-    {
-        inputReader.EnablePlayerMovement(false);
-    }
-
-    private void Resume()
-    {
-        if (enemyController.CollectedGem)
-            return;
-
-        inputReader.EnablePlayerMovement();
-    }
 
     private void OnDisable()
     {
         ServiceLocator.Instance.DeregisterService<PlayerController>(this);
         GameManager.OnGamePause -= Pause;
         GameManager.OnGameResume -= Resume;
-        GameManager.OnGameStart -= StartGame;
+        GameManager.OnInitialize -= StartGame;
         LightManager.DelayedLightOff -= StartLevel;
         PlatformMovement.OnPlatformMovementComplete -= LandedAtNewGrid;
         GridManager.GemCollected -= GemCollected;
@@ -105,6 +92,18 @@ public class PlayerController : MonoBehaviour
         gameManager = ServiceLocator.Instance.GetService<GameManager>(this);
         gridManager = ServiceLocator.Instance.GetService<GridManager>(this);
         playerAudio = ServiceLocator.Instance.GetService<PlayerAudio>(this);
+    }
+    private void Pause()
+    {
+        inputReader.EnablePlayerMovement(false);
+    }
+
+    private void Resume()
+    {
+        if (enemyController.CollectedGem)
+            return;
+
+        inputReader.EnablePlayerMovement();
     }
 
     private void ProcessSwipeDelta(Vector2 direction)

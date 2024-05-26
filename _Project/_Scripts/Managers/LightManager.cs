@@ -27,7 +27,6 @@ public class LightManager : MonoBehaviour
     {
         cameraManager = ServiceLocator.Instance.GetService<CameraManager>(this);
         remainingDelay = lightsOffDelay;
-        LightsOffDelayed();
     }
 
     private void OnEnable()
@@ -36,9 +35,10 @@ public class LightManager : MonoBehaviour
         GridManager.GemCollected += CollectedGem;
         PlatformMovement.OnPlatformMovementComplete += LightsOffDelayed;
         PlayerController.OnPlayerDamage += DisableLight;
-        GameManager.OnGameEnd += GameOver;
+        GameManager.OnGameStart += LightsOffDelayed;
         GameManager.OnGamePause += Pause;
         GameManager.OnGameResume += Resume;
+        GameManager.OnGameEnd += GameOver;
     }
 
     private void Resume()
@@ -63,8 +63,10 @@ public class LightManager : MonoBehaviour
         inputReader.LightEnabledEvent -= ToggleLight;
         PlayerController.OnPlayerDamage -= DisableLight;
         PlatformMovement.OnPlatformMovementComplete -= LightsOffDelayed;
-        GameManager.OnGameEnd -= GameOver;
+        GameManager.OnGameStart -= LightsOffDelayed;
         GameManager.OnGamePause -= Pause;
+        GameManager.OnGameResume -= Resume;
+        GameManager.OnGameEnd -= GameOver;
     }
 
     void DisableLight(int a)
@@ -87,6 +89,7 @@ public class LightManager : MonoBehaviour
         }
         moving = false;
         ToggleLight(false);
+        yield return Helpers.GetWait(1.5f);
         DelayedLightOff?.Invoke();
     }
 

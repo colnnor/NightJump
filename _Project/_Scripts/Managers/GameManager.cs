@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
+    public static event Action OnInitialize;
     public static event Action OnGameStart;
     public static event Action OnGamePause;
     public static event Action OnGameResume;
@@ -16,6 +17,7 @@ public class GameManager : MonoBehaviour
 
     [Title("Game Settings")]
     [SerializeField] private EventChannel sceneLoadedChannel;
+    [SerializeField] private EventChannel gameStartChannel;
     [SerializeField] private int completeLevelsToChangeSize = 5;
     [MinValue(1)]
     [SerializeField] private int initialGridsToCreate = 3;
@@ -28,7 +30,7 @@ public class GameManager : MonoBehaviour
     private InputActionMap uiInputMap;
     private InputActionMap playerInputMap;
     private bool levelLoaded;
-
+    private bool gameStarted;
     private int currentSize = 5;
     private int maxSize = 10;
     bool gameOver;
@@ -47,7 +49,7 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         GridManager.OnLevelLoaded += LevelLoaded;
-        inputReader.LightEnabledEvent += LevelLoadedEvent;
+        inputReader.EnterEvent += StartGame;
         inputReader.PauseEvent += OnPause;
         PlayerController.OnPlayerDeath += EndGame;
         GridManager.GemCollected += IncreaseScore;
@@ -55,19 +57,22 @@ public class GameManager : MonoBehaviour
 
     private void OnDisable()
     {
-        inputReader.LightEnabledEvent -= LevelLoadedEvent;
+        inputReader.EnterEvent -= StartGame;
         GridManager.OnLevelLoaded -= LevelLoaded;
         ServiceLocator.Instance.DeregisterService<GameManager>(this);
         PlayerController.OnPlayerDeath -= EndGame;
         inputReader.PauseEvent -= OnPause;
         GridManager.GemCollected -= IncreaseScore;
     }
-    private void LevelLoaded() => levelLoaded = true;
-
-    void LevelLoadedEvent(bool b)
+    private void LevelLoaded()
     {
-        sceneLoadedChannel.Invoke(new Empty());
+        Debug.Log("Level loaded");
+
+        inputReader.EnableInputActions();
+        inputReader.SwitchActionMap(playerInputMap);
+        levelLoaded = true;
     }
+
     private void IncreaseScore(bool value)
     {
         if (value)
@@ -86,14 +91,23 @@ public class GameManager : MonoBehaviour
     private IEnumerator Start()
     {
         yield return null;
-        StartGame();
+        InitializeGame();
     }
-
 
     public void StartGame()
     {
-        OnGameStart?.Invoke();
-        inputReader.EnableInputActions(false);
+        if (levelLoaded && !gameStarted)
+        {
+            gameStartChannel?.Invoke(new Empty());
+            OnGameStart?.Invoke();
+            gameStarted = true;
+        }
+    }
+
+    public void InitializeGame()
+    {
+        OnInitialize?.Invoke();
+        inputReader.EnablePlayerMovement(false);
     }
 
     public void EndGame()

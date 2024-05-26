@@ -82,7 +82,9 @@ public class ServiceLocator : SerializedMonoBehaviour
             return default;
         }
     }
-
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private void OnDestroy()
+    {
+        ResetStatics();
+    }
     static void ResetStatics() => instance = null;
 }

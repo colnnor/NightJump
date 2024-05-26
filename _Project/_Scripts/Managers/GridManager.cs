@@ -51,7 +51,7 @@ public class GridManager : MonoBehaviour
     private void OnEnable()
     {
         GameManager.AdjustSize += UpdateGridData;
-        GameManager.OnGameStart += GameStart;
+        GameManager.OnInitialize += GameStart;
         Gem.GemCollected += NextGrid;
     }
 
@@ -59,7 +59,7 @@ public class GridManager : MonoBehaviour
     {
         ServiceLocator.Instance.DeregisterService<GridManager>(this);
         GameManager.AdjustSize += UpdateGridData;
-        GameManager.OnGameStart -= GameStart;
+        GameManager.OnInitialize -= GameStart;
         Gem.GemCollected -= NextGrid;
     }
 
@@ -135,7 +135,11 @@ public class GridManager : MonoBehaviour
 
     private GridData GetGridData(int index) => gridDataGroup.GridDatas[index];
 
-    public void UpdateGridData(int index) => currentGridData = GetGridData(index);
+    public void UpdateGridData(int index)
+    {
+        currentGridData = GetGridData(index);
+        pathSimilarityLimit = currentGridData.Size;
+    }
 
     public NodeType GetNodeType(int x, int y) => GetCurrentGrid().GetNodeType(x, y);
     public NodeType GetNodeType(Vector3 position) => GetCurrentGrid().GetNodeType(position);

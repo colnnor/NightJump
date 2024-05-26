@@ -11,5 +11,5 @@ AssetOrigin:
   productId: 206665
   packageName: All In 1 Vfx Toolkit
   packageVersion: 1.6
-  assetPath: Assets/AllIn1VfxToolkit/ParticlePresets/Resources/ConeBurstPsPreset.preset
+  assetPath: Assets/External/AllIn1VfxToolkit/ParticlePresets/Resources/ConeBurstPsPreset.preset
   uploadId: 659577

@@ -10,5 +10,5 @@ AssetOrigin:
   productId: 206665
   packageName: All In 1 Vfx Toolkit
   packageVersion: 1.6
-  assetPath: Assets/AllIn1VfxToolkit/Demo & Assets/Demo/Scripts/All1VfxDemoScriptsAssembly.asmdef
+  assetPath: Assets/External/AllIn1VfxToolkit/Demo & Assets/Demo/Scripts/All1VfxDemoScriptsAssembly.asmdef
   uploadId: 659577

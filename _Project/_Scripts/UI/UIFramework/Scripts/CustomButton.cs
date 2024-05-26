@@ -65,22 +65,10 @@ public class CustomButton : CustomUIComponent, IPointerDownHandler, IPointerUpHa
     {
         PointerReleaseAnimation();
 
-        //if (buttonManager.CurrentSelected != gameObject) return;
         onClickEvent?.Invoke(new Empty());
         onClick?.Invoke();
     }
     #region pointer hover methods
-    public void OnSelect(BaseEventData eventData) => PointerEnterAnimation();/*
-        if (!buttonManager) return;
-
-        buttonManager.CurrentSelected = gameObject;
-        buttonManager.LastSelecterd = gameObject;
-        buttonManager.LastSelectedIndex = buttonManager.Buttons.IndexOf(gameObject);*/
-    public void OnDeselect(BaseEventData eventData) => PointerExitAnimation();/*
-        if (!buttonManager) return;
-        buttonManager.CurrentSelected = null;*/
-    public void OnPointerEnter(PointerEventData eventData) => OnSelect(eventData);
-    public void OnPointerExit(PointerEventData eventData) => OnDeselect(eventData);
 
     private void OnDisable()
     {
@@ -112,6 +100,9 @@ public class CustomButton : CustomUIComponent, IPointerDownHandler, IPointerUpHa
         animationTransform?.DOKill();
     
     }
+
+    public void OnPointerEnter(PointerEventData eventData) => PointerEnterAnimation();
+    public void OnPointerExit(PointerEventData eventData) => PointerExitAnimation();
 
     #endregion
 }

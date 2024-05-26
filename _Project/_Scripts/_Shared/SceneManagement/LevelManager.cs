@@ -1,8 +1,11 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System;
+using Eflatun.SceneReference;
+using NUnit.Framework;
 
 public enum SceneType
 {
@@ -15,10 +18,12 @@ public class LevelManager : MonoBehaviour
     public static LevelManager Instance;
 
     [SerializeField] private bool disableCanvasOnStart;
-    [SerializeField] private GameObject pressSpaceToPlay;
+    [SerializeField] private GameObject pressEnterToPlay;
     [SerializeField] private GameObject loadingCanvas;
     [SerializeField] private GameObject canvasCamera;
     [SerializeField] private Image progressBar;
+
+    [SerializeField] private List<SceneReference> scenesToLoad;
 
     int currenScene;
 
@@ -39,7 +44,7 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        LoadScene(1);
+        LoadScene(0);
     }
 
     public void LoadNextScene()
@@ -53,10 +58,16 @@ public class LevelManager : MonoBehaviour
         StartCoroutine(LoadSceneAsync(index));
     }
 
+    public void LoadScene(SceneReference reference)
+    {
+        StartCoroutine(LoadSceneAsync(scenesToLoad.IndexOf(reference)));
+    }
+
     private IEnumerator LoadSceneAsync(int index)
     {
         // Begin to load the Scene you specify
-        var scene = SceneManager.LoadSceneAsync(index);
+        SceneReference sceneReference = scenesToLoad[index];
+        var scene = SceneManager.LoadSceneAsync(sceneReference.Path);
         scene.allowSceneActivation = false;
 
         EnableLoadingCanvas();
@@ -76,7 +87,7 @@ public class LevelManager : MonoBehaviour
         SceneType type = index == 0 ? SceneType.MainMenu : SceneType.GamePlay;
         OnSceneLoaded?.Invoke(type);
 
-        if (disableCanvasOnStart)
+        if (type == SceneType.MainMenu)
         {
             EnableLoadingCanvas(false);
         }
@@ -84,6 +95,7 @@ public class LevelManager : MonoBehaviour
 
     public void EnableLoadingCanvas(bool enabled = true)
     {
+        pressEnterToPlay.SetActive(enabled);
         canvasCamera.SetActive(enabled);
         loadingCanvas.SetActive(enabled);
     }

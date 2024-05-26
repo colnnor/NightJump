@@ -18,10 +18,10 @@ public class GridGroup
     [SerializeField] private Vector3Int gemPosition;
     [SerializeField] private Vector3Int enemyPosition;
     [SerializeField] private int index;
-/*
+
     private GridManager gridManager;
     private int pathSimilarityLimit;
-    */
+    
     public int Size => grid.GetGridSize();
     public AStar PathFinder => pathFinder;
     public NodeGrid Grid => grid;
@@ -36,6 +36,7 @@ public class GridGroup
 
     public GridGroup(Vector3Int origin, GridData gridData, GridObjectSpawner spawner, int index)
     {
+        gridManager = ServiceLocator.Instance.GetService<GridManager>(this);
         this.index = index;
         this.origin = origin;
         gridObjectSpawner = spawner;
@@ -44,24 +45,44 @@ public class GridGroup
         pathFinder = new AStar(Grid);
         enemyPathToGem = new();
         playerPathToGem = new();
-/*
-        pathSimilarityLimit = gridManager.PathSimilarityLimit;*/
+
+        pathSimilarityLimit = gridManager.PathSimilarityLimit;
         gridValues = grid.GridValues;
     }
 
     public bool AttemptToPlaceObjects()
     {
-        for (int i = 0; i < 500; i++)
+        bool success = false;
+        while (!success)
         {
+
             Grid.RandomizeGrid();
 
             if (!AttemptToPlaceGem()) continue;
 
             if (!AttemptToPlaceEnemy()) continue;
 
+            if (PlayerEnemyPathIsTooSimilar()) continue;
+            
+            success = true;
             return true;
+        
         }
+
         return false;
+    }
+
+    private int ComparePlayerAndEnemyPath()
+    {
+        int count = 0;
+        for(int i = 0; i < playerPathToGem.Count; i++)
+        {
+            if (enemyPathToGem.Contains(playerPathToGem[i]))
+            {
+                count++;
+            }
+        }
+        return count;
     }
 
     bool AttemptToPlaceGem()
@@ -73,8 +94,8 @@ public class GridGroup
                 Node possibleGemNode = Grid.GetNode(x, y);
                 if (AttemptToPlace(possibleGemNode, Origin, ref gemPosition))
                 {
-                    //PathFinder.FindPath(gemPosition, Origin, out List<Node> list);
-                    //playerPathToGem = new(list);
+                    PathFinder.FindPath(gemPosition, Origin, out List<Node> list);
+                    playerPathToGem = new(list);
                     return true;
                 }
             }
@@ -137,8 +158,8 @@ public class GridGroup
     {
         gridObjectSpawner.ReturnObjectsToPool(index);
     }
-/*
-    public bool CheckEnemyPlayerSimilarity()
+
+    public bool PlayerEnemyPathIsTooSimilar()
     {
         int similarCount = 0;
         for(int i = 0; i < enemyPathToGem.Count; i++)
@@ -148,7 +169,7 @@ public class GridGroup
                 similarCount++;
             }
         }
-        return similarCount > pathSimilarityLimit;
+
+        return similarCount >= pathSimilarityLimit;
     }
-    */
 }

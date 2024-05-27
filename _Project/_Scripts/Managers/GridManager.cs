@@ -17,7 +17,7 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Transform enemy;
     [SerializeField] private Transform gem;
     [SerializeField] private PlatformMovement platformMovement;
-    [SerializeField] private int pathSimilarityLimit;
+    [SerializeField] private int pathSimilarityLimitAddition = 2;
 
     [Title("Awake Settings")]
     [Range(5, 10)]
@@ -34,7 +34,7 @@ public class GridManager : MonoBehaviour
     private GridData currentGridData;
     private int initialGridsToCreate;
 
-    public int PathSimilarityLimit => pathSimilarityLimit;
+    public int GetPathSimilarityLimit() => currentGridData.Size + pathSimilarityLimitAddition + 100;
 
     private void Awake()
     {
@@ -138,7 +138,6 @@ public class GridManager : MonoBehaviour
     public void UpdateGridData(int index)
     {
         currentGridData = GetGridData(index);
-        pathSimilarityLimit = currentGridData.Size;
     }
 
     public NodeType GetNodeType(int x, int y) => GetCurrentGrid().GetNodeType(x, y);

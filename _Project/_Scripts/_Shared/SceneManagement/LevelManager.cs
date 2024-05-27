@@ -70,6 +70,9 @@ public class LevelManager : MonoBehaviour
         var scene = SceneManager.LoadSceneAsync(sceneReference.Path);
         scene.allowSceneActivation = false;
 
+        SceneType type = index == 0 ? SceneType.MainMenu : SceneType.GamePlay;
+
+        if(type != SceneType.MainMenu)
         EnableLoadingCanvas();
 
         // While the Scene is loading, output the current progress
@@ -84,7 +87,6 @@ public class LevelManager : MonoBehaviour
 
         scene.allowSceneActivation = true;
 
-        SceneType type = index == 0 ? SceneType.MainMenu : SceneType.GamePlay;
         OnSceneLoaded?.Invoke(type);
 
         if (type == SceneType.MainMenu)

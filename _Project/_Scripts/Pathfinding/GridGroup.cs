@@ -46,16 +46,14 @@ public class GridGroup
         enemyPathToGem = new();
         playerPathToGem = new();
 
-        pathSimilarityLimit = gridManager.PathSimilarityLimit;
+        pathSimilarityLimit = gridManager.GetPathSimilarityLimit();
         gridValues = grid.GridValues;
     }
 
     public bool AttemptToPlaceObjects()
     {
-        bool success = false;
-        while (!success)
+        for (int i = 0; i < 5000; i++)
         {
-
             Grid.RandomizeGrid();
 
             if (!AttemptToPlaceGem()) continue;
@@ -64,11 +62,8 @@ public class GridGroup
 
             if (PlayerEnemyPathIsTooSimilar()) continue;
             
-            success = true;
             return true;
-        
         }
-
         return false;
     }
 
@@ -170,6 +165,6 @@ public class GridGroup
             }
         }
 
-        return similarCount >= pathSimilarityLimit;
+        return similarCount + 1 >= pathSimilarityLimit;
     }
 }
